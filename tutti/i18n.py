@@ -259,6 +259,19 @@ TEXTES: dict[str, dict[str, str]] = {
     # ---- moteur : noms et erreurs
     "nom.complet": {"fr": "complet", "en": "complete"},
     "nom.livret": {"fr": "livret", "en": "booklet"},
+    "options.mise_en_page": {"fr": "Mise en page :", "en": "Layout:"},
+    "livret.non": {"fr": "Pages normales", "en": "Normal pages"},
+    "livret.a5": {"fr": "Livret A5 prêt à imprimer (2 pages par feuille A4, pour plier et agrafer)",
+                  "en": "A5 booklet ready to print (2 pages per A4 sheet, to fold and staple)"},
+    "livret.ordre": {"fr": "Ordre du livret seulement (l'imprimante fait « 2 pages par feuille »)",
+                     "en": "Booklet order only (the printer does “2 pages per sheet”)"},
+    "livret.conseil_ordre": {"fr": "Les pages sont dans l'ordre du livret. Pour imprimer : option « 2 pages "
+                                   "par feuille » (Plusieurs pages / Multiple), A4 paysage, recto-verso avec "
+                                   "retournement sur le BORD COURT. Pliez la pile au milieu, emboîtez les "
+                                   "feuilles et agrafez au pli.",
+                             "en": "The pages are in booklet order. To print: “2 pages per sheet” (Multiple), "
+                                   "A4 landscape, double-sided flipping on the SHORT EDGE. Fold the stack in the "
+                                   "middle, nest the sheets and staple along the fold."},
     "options.livret": {"fr": "Livret A5 à plier : 2 pages par feuille A4, dans l'ordre pour agrafer au milieu",
                        "en": "A5 booklet to fold: 2 pages per A4 sheet, ordered for stapling in the middle"},
     "livret.conseil": {"fr": "Pour imprimer le livret : format A4, orientation paysage, taille réelle (100 %), "

@@ -129,6 +129,14 @@ QLineEdit {{
     selection-background-color: {SELECTION}; selection-color: {ENCRE};
 }}
 QLineEdit:focus {{ border-color: {OR}; }}
+QComboBox {{
+    background: {CARTE}; border: 1px solid {BORD}; border-radius: 5px; padding: 4px 8px;
+}}
+QComboBox:hover, QComboBox:focus {{ border-color: {OR}; }}
+QComboBox QAbstractItemView {{
+    background: {CARTE}; border: 1px solid {BORD}; selection-background-color: {SELECTION};
+    selection-color: {ENCRE}; outline: 0;
+}}
 QLineEdit:read-only {{ background: #F7F3EA; color: #5C544B; }}
 
 QTabWidget::pane {{ border: 1px solid {BORD}; border-radius: 8px; top: -1px; background: {PAPIER}; }}

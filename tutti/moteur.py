@@ -85,7 +85,10 @@ class InfoPdf:
 class Options:
     signets: bool = True            # un signet par fichier source
     recto: bool = False             # chaque fichier commence sur une page impaire
-    livret: bool = False            # imposition en livret A5 à plier et agrafer
+    # Livret : "" (pages normales), "a5" (2 pages A5 par feuille A4, prêt à
+    # imprimer) ou "ordre" (pages inchangées, remises dans l'ordre du livret,
+    # pour l'option « 2 pages par feuille » de l'imprimante). True vaut "a5".
+    livret: str | bool = ""
     titres_signets: dict = field(default_factory=dict)  # chemin -> titre imposé
 
 
@@ -125,7 +128,7 @@ def _nettoyer_fin(texte: str) -> str:
 
 def proposer_nom(chemins: Sequence[Path], livret: bool = False) -> str:
     """Nom de fichier proposé pour le résultat, sans le dossier."""
-    if livret and chemins:
+    if livret and livret != "non" and chemins:
         base = proposer_nom(chemins)[:-4]
         for fin in (f" - {tr('nom.complet')}",):
             if base.endswith(fin):
@@ -396,10 +399,14 @@ def assembler(sources: Sequence[Path], sortie: Path, options: Options | None = N
         if not len(resultat.pages):
             raise ErreurTutti(tr("err.aucune_page"))
 
-        if options.livret:
-            # Imposition : le document lu en livret. Les signets n'auraient
-            # plus de sens (deux pages par feuille, dans le désordre).
-            livret = imposer_livret(resultat)
+        mode_livret = "a5" if options.livret is True else (options.livret or "")
+        if mode_livret:
+            # Le document assemblé (un seul fichier de plusieurs pages, ou
+            # plusieurs fichiers d'une page mis bout à bout dans l'ordre de la
+            # liste) est réarrangé en livret. Les signets n'auraient plus de
+            # sens : les pages ne se suivent plus.
+            livret = (ordonner_livret(resultat) if mode_livret == "ordre"
+                      else imposer_livret(resultat))
             ouverts.append(resultat)
             resultat = livret
         elif options.signets and debuts:
@@ -470,6 +477,24 @@ def imposer_livret(source, format_feuille=A4_PAYSAGE):
         if droite is not None:
             face.add_overlay(source.pages[droite], pikepdf.Rectangle(largeur / 2, 0, largeur, hauteur))
     return livret
+
+
+def ordonner_livret(source):
+    """Mêmes pages, mêmes dimensions, mais dans l'ordre du livret, blanches
+    comprises : 8, 1, 2, 7, 6, 3, 4, 5 pour 8 pages. L'imprimante, réglée sur
+    « 2 pages par feuille » et recto-verso bord court, fait le reste."""
+    import pikepdf
+
+    resultat = pikepdf.new()
+    premiere = source.pages[0].mediabox
+    taille = (float(abs(premiere[2] - premiere[0])), float(abs(premiere[3] - premiere[1])))
+    for face in ordre_livret(len(source.pages)):
+        for i in face:
+            if i is None:
+                resultat.add_blank_page(page_size=taille)
+            else:
+                _copier_pages(resultat, source, [i])
+    return resultat
 
 
 def _copier_pages(dest, src, pages=None) -> None:

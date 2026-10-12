@@ -200,3 +200,24 @@ def test_assemblage_en_livret(tmp_path):
         assert dessins(pdf.pages[2]) == 2        # feuille 2 recto : (6, 3)
     assert moteur.proposer_nom([Path("Concert - 1.pdf"), Path("Concert - 2.pdf")], livret=True) \
         == "Concert - livret.pdf"
+
+
+def test_livret_a_partir_de_fichiers_d_une_page(tmp_path):
+    """Huit fichiers d'une page chacun (ex. 8 pages de programme scannées
+    séparément) : assemblés dans l'ordre de la liste puis mis en livret."""
+    fichiers = [fabriquer(tmp_path / f"p{i}.pdf", 1, 400 + i) for i in range(1, 9)]
+    # Ordre du livret seulement : 8 pages A4 remises en 8,1,2,7,6,3,4,5
+    sortie = tmp_path / "ordre.pdf"
+    assert moteur.assembler(fichiers, sortie, Options(livret="ordre")) == 8
+    assert largeurs(sortie) == [408, 401, 402, 407, 406, 403, 404, 405]
+    # Livret A5 : 2 feuilles, 4 faces A4 paysage
+    sortie2 = tmp_path / "livret.pdf"
+    assert moteur.assembler(fichiers, sortie2, Options(livret="a5")) == 4
+
+
+def test_ordre_livret_complete_par_des_blanches(tmp_path):
+    fichiers = [fabriquer(tmp_path / f"p{i}.pdf", 1, 500 + i) for i in range(1, 6)]
+    sortie = tmp_path / "o.pdf"
+    assert moteur.assembler(fichiers, sortie, Options(livret="ordre")) == 8
+    # pages 6, 7, 8 blanches (largeur de la 1re page, 501) en fin de livret
+    assert largeurs(sortie) == [501, 501, 502, 501, 501, 503, 504, 505]

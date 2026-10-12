@@ -2,6 +2,13 @@
 
 ## English
 
+### 1.1.0
+
+- Booklet layout is now a choice: *A5 booklet ready to print* (2 pages per A4 sheet) or
+  *booklet order only* (same pages, reordered for the printer's “2 pages per sheet”).
+- Works from one multi-page file or from several one-page files, in list order.
+- Permanent download links (files without a version number).
+
 ### 1.0.0
 
 First version.
@@ -17,6 +24,15 @@ First version.
 - Windows, macOS and Linux packages with automatic updates and error reports.
 
 ## Francais
+
+### 1.1.0
+
+- La mise en page livret devient un choix : *livret A5 prêt à imprimer* (2 pages par feuille A4) ou
+  *ordre du livret seulement* (mêmes pages, remises dans l'ordre pour l'option « 2 pages par feuille »
+  de l'imprimante).
+- Fonctionne avec un fichier de plusieurs pages comme avec plusieurs fichiers d'une page, dans
+  l'ordre de la liste.
+- Liens de téléchargement permanents (fichiers sans numéro de version).
 
 ### 1.0.0
 
