@@ -182,10 +182,14 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
         self.c_signets.setChecked(self.reglages.value("signets", True, type=bool))
         self.c_recto = QtWidgets.QCheckBox(tr("options.recto"))
         self.c_recto.setChecked(self.reglages.value("recto", False, type=bool))
+        self.c_livret = QtWidgets.QCheckBox(tr("options.livret"))
+        self.c_livret.setChecked(self.reglages.value("livret", False, type=bool))
+        self.c_livret.toggled.connect(self._livret_bascule)
         self.c_ouvrir = QtWidgets.QCheckBox(tr("options.ouvrir"))
         self.c_ouvrir.setChecked(self.reglages.value("ouvrir", True, type=bool))
-        for c in (self.c_signets, self.c_recto, self.c_ouvrir):
+        for c in (self.c_signets, self.c_recto, self.c_livret, self.c_ouvrir):
             lo.addWidget(c)
+        self.c_signets.setEnabled(not self.c_livret.isChecked())
         ga.addWidget(options)
 
         sortie = QtWidgets.QGroupBox(tr("sortie.titre"))
@@ -557,9 +561,15 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
         self._analyses_en_cours = max(0, self._analyses_en_cours - 1)
         self._majeur_etat()
 
+    def _livret_bascule(self, coche: bool):
+        self.c_signets.setEnabled(not coche)       # pas de signets dans un livret
+        self._liste_changee()
+
     def _liste_changee(self):
         if self._nom_auto:
-            self.e_nom.setText(moteur.proposer_nom(self.chemins()) if self.liste.count() else "")
+            livret = hasattr(self, "c_livret") and self.c_livret.isChecked()
+            self.e_nom.setText(moteur.proposer_nom(self.chemins(), livret=livret)
+                               if self.liste.count() else "")
         self._majeur_etat()
 
     def _deplacer(self, sens: int):
@@ -702,9 +712,11 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
             if r != QtWidgets.QMessageBox.StandardButton.Yes:
                 return
         for cle, case in (("signets", self.c_signets), ("recto", self.c_recto),
-                          ("ouvrir", self.c_ouvrir)):
+                          ("livret", self.c_livret), ("ouvrir", self.c_ouvrir)):
             self.reglages.setValue(cle, case.isChecked())
-        options = Options(signets=self.c_signets.isChecked(), recto=self.c_recto.isChecked())
+        options = Options(signets=self.c_signets.isChecked(), recto=self.c_recto.isChecked(),
+                          livret=self.c_livret.isChecked())
+        self._livret_en_cours = options.livret
         converties = {str(i.chemin): i.pdf for i in self._infos()
                       if i is not None and i.genre != "pdf" and i.pdf}
         self._en_cours = True
@@ -750,6 +762,8 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
             return
         sortie = self._sortie
         self.statusBar().showMessage(tr("statut.cree", nom=sortie.name, p=pages), 10000)
+        if getattr(self, "_livret_en_cours", False):
+            QtWidgets.QMessageBox.information(self, tr("options.titre"), tr("livret.conseil"))
         if self.c_ouvrir.isChecked():
             QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(sortie)))
         else:

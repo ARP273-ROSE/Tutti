@@ -25,6 +25,8 @@ Tutti does what online PDF tools do, without uploading anything:
   Microsoft Office when installed (Windows), otherwise by LibreOffice — read-only, macros disabled.
 - **Split** a PDF — or a Word, Excel, PowerPoint document or image — into one file per page, or by
   page ranges (`1-8, 9-16, 17-`). Everything combines: a 6-page Word file becomes six one-page PDFs.
+- **A5 booklet** for folding and stapling (concert programmes): pages imposed two per A4 sheet in
+  saddle-stitch order — print double-sided, flip on the short edge.
 - Option for double-sided printing: every part starts on a right-hand page.
 
 **Safe**: originals are never modified; Tutti refuses to overwrite a source file; output is written
@@ -60,6 +62,8 @@ Tutti fait ce que font les sites de PDF en ligne, sans rien envoyer sur Internet
   coupées.
 - **Découper** un PDF — ou un document Word, Excel, PowerPoint, ou une image — en un fichier par page,
   ou par plages de pages (`1-8, 9-16, 17-`). Tout se combine : un Word de 6 pages donne six PDF d'une page.
+- **Livret A5** à plier et agrafer (programmes de concert) : pages imposées deux par feuille A4 dans
+  l'ordre du pliage — imprimer en recto-verso, retournement sur le bord court.
 - Option recto-verso : chaque partie commence sur une page de droite.
 
 **Sûr** : les originaux ne sont jamais modifiés ; Tutti refuse d'écraser un fichier source ; le

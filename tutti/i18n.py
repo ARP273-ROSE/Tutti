@@ -258,6 +258,15 @@ TEXTES: dict[str, dict[str, str]] = {
                         "en": "The program could not start.\n\n{erreur}\n\nDetails saved in:\n{chemin}"},
     # ---- moteur : noms et erreurs
     "nom.complet": {"fr": "complet", "en": "complete"},
+    "nom.livret": {"fr": "livret", "en": "booklet"},
+    "options.livret": {"fr": "Livret A5 à plier : 2 pages par feuille A4, dans l'ordre pour agrafer au milieu",
+                       "en": "A5 booklet to fold: 2 pages per A4 sheet, ordered for stapling in the middle"},
+    "livret.conseil": {"fr": "Pour imprimer le livret : format A4, orientation paysage, taille réelle (100 %), "
+                             "recto-verso avec retournement sur le BORD COURT. Pliez la pile au milieu, "
+                             "emboîtez les feuilles et agrafez au pli.",
+                       "en": "To print the booklet: A4 paper, landscape, actual size (100%), double-sided "
+                             "flipping on the SHORT EDGE. Fold the stack in the middle, nest the sheets and "
+                             "staple along the fold."},
     "nom.defaut": {"fr": "Assemblage", "en": "Merged"},
     "err.inaccessible": {"fr": "Fichier inaccessible ({detail})", "en": "File not accessible ({detail})"},
     "err.vide": {"fr": "Ce PDF ne contient aucune page", "en": "This PDF has no pages"},

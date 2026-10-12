@@ -1,5 +1,7 @@
 PyQt6>=6.5
-pikepdf>=9.0
+# Mac Intel : pikepdf 10.14+ n'y publie plus de roue precompilee (compilation impossible sans qpdf).
+pikepdf>=9.0; not (sys_platform == "darwin" and platform_machine == "x86_64")
+pikepdf>=9.0,<10.14; sys_platform == "darwin" and platform_machine == "x86_64"
 img2pdf>=0.5
 Pillow>=10.0
 comtypes>=1.2; sys_platform == "win32"

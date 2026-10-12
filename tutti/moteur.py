@@ -85,6 +85,7 @@ class InfoPdf:
 class Options:
     signets: bool = True            # un signet par fichier source
     recto: bool = False             # chaque fichier commence sur une page impaire
+    livret: bool = False            # imposition en livret A5 à plier et agrafer
     titres_signets: dict = field(default_factory=dict)  # chemin -> titre imposé
 
 
@@ -122,8 +123,14 @@ def _nettoyer_fin(texte: str) -> str:
     return texte.rstrip(" -_.,;:–—(").strip()
 
 
-def proposer_nom(chemins: Sequence[Path]) -> str:
+def proposer_nom(chemins: Sequence[Path], livret: bool = False) -> str:
     """Nom de fichier proposé pour le résultat, sans le dossier."""
+    if livret and chemins:
+        base = proposer_nom(chemins)[:-4]
+        for fin in (f" - {tr('nom.complet')}",):
+            if base.endswith(fin):
+                base = base[: -len(fin)]
+        return f"{base} - {tr('nom.livret')}.pdf"
     if not chemins:
         return f"{tr('nom.defaut')}.pdf"
     if len(chemins) == 1 and type_fichier(chemins[0]) != "pdf":
@@ -389,7 +396,13 @@ def assembler(sources: Sequence[Path], sortie: Path, options: Options | None = N
         if not len(resultat.pages):
             raise ErreurTutti(tr("err.aucune_page"))
 
-        if options.signets and debuts:
+        if options.livret:
+            # Imposition : le document lu en livret. Les signets n'auraient
+            # plus de sens (deux pages par feuille, dans le désordre).
+            livret = imposer_livret(resultat)
+            ouverts.append(resultat)
+            resultat = livret
+        elif options.signets and debuts:
             with resultat.open_outline() as plan:
                 plan.root.clear()
                 for titre, page in debuts:
@@ -416,6 +429,47 @@ def assembler(sources: Sequence[Path], sortie: Path, options: Options | None = N
             except Exception:
                 pass
         temporaire.cleanup()
+
+
+A4_PAYSAGE = (841.8898, 595.2756)
+
+
+def ordre_livret(nb_pages: int) -> list[tuple[int | None, int | None]]:
+    """Ordre des pages d'un livret plié et agrafé au milieu (« piqûre à cheval »).
+
+    Renvoie, face après face (recto puis verso de chaque feuille), le couple
+    (page de gauche, page de droite), numérotées dès 0 ; None = page blanche
+    ajoutée pour atteindre un multiple de 4. Pour 8 pages : feuille 1 recto
+    (8, 1), verso (2, 7) ; feuille 2 recto (6, 3), verso (4, 5).
+    """
+    total = (nb_pages + 3) // 4 * 4
+
+    def page(i):
+        return i if i < nb_pages else None
+
+    faces = []
+    for f in range(total // 4):
+        faces.append((page(total - 1 - 2 * f), page(2 * f)))         # recto
+        faces.append((page(2 * f + 1), page(total - 2 - 2 * f)))     # verso
+    return faces
+
+
+def imposer_livret(source, format_feuille=A4_PAYSAGE):
+    """Nouveau PDF : deux pages côte à côte par face de feuille, dans l'ordre
+    du livret. Chaque page est réduite (A4 → A5) sans être déformée. À
+    imprimer en recto-verso, retournement sur le bord COURT."""
+    import pikepdf
+
+    largeur, hauteur = format_feuille
+    livret = pikepdf.new()
+    for gauche, droite in ordre_livret(len(source.pages)):
+        livret.add_blank_page(page_size=(largeur, hauteur))
+        face = livret.pages[-1]
+        if gauche is not None:
+            face.add_overlay(source.pages[gauche], pikepdf.Rectangle(0, 0, largeur / 2, hauteur))
+        if droite is not None:
+            face.add_overlay(source.pages[droite], pikepdf.Rectangle(largeur / 2, 0, largeur, hauteur))
+    return livret
 
 
 def _copier_pages(dest, src, pages=None) -> None:

@@ -10,6 +10,7 @@ First version.
   output name suggested automatically.
 - Convert images and Word, Excel, PowerPoint documents to PDF (Microsoft Office or LibreOffice).
 - Split a PDF, or any supported document or image, into one file per page or by page ranges.
+- A5 booklet imposition for folding and stapling.
 - Double-sided printing option (each part starts on a right-hand page).
 - Parallel analysis and splitting, atomic writes, sources never modified.
 - Fixed look independent of the system theme; English and French, detected automatically.
@@ -25,6 +26,7 @@ Première version.
   par fichier ; nom du fichier final proposé automatiquement.
 - Conversion en PDF des images et des documents Word, Excel, PowerPoint (Microsoft Office ou LibreOffice).
 - Découpage d'un PDF, ou de tout document ou image accepté, en un fichier par page ou par plages.
+- Imposition en livret A5 à plier et agrafer.
 - Option recto-verso (chaque partie commence sur une page de droite).
 - Analyse et découpage en parallèle, écriture atomique, sources jamais modifiées.
 - Apparence figée, indépendante du thème du système ; français et anglais, détectés automatiquement.

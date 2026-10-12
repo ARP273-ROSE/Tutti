@@ -173,3 +173,30 @@ def test_liens_internes_et_droits(tmp_path):
             assert "/Names" in res.Root and "/Dests" in res.Root.Names
     if os.name != "nt":
         assert (sortie.stat().st_mode & 0o044) == 0o044     # lisible par le groupe et les autres
+
+
+def test_ordre_livret():
+    # 8 pages : feuille 1 = (8,1) / (2,7) ; feuille 2 = (6,3) / (4,5)  (numérotées dès 1)
+    faces = [(g + 1, d + 1) for g, d in moteur.ordre_livret(8)]
+    assert faces == [(8, 1), (2, 7), (6, 3), (4, 5)]
+    # 5 pages : complété à 8 par 3 blanches (None), placées à la fin du livret
+    assert moteur.ordre_livret(5)[0] == (None, 0)
+    assert sum(1 for f in moteur.ordre_livret(5) for p in f if p is None) == 3
+
+
+def test_assemblage_en_livret(tmp_path):
+    a = fabriquer(tmp_path / "a.pdf", 6)
+    sortie = tmp_path / "livret.pdf"
+    n = moteur.assembler([a], sortie, Options(livret=True))
+    assert n == 4                                 # 6 pages → 8 → 2 feuilles, 4 faces
+    with pikepdf.open(sortie) as pdf:
+        for p in pdf.pages:
+            assert int(p.mediabox[2]) == 841 and int(p.mediabox[3]) == 595      # A4 paysage
+        def dessins(page):            # nombre de pages posées sur la face
+            return sum(1 for _, op in pikepdf.parse_content_stream(page)
+                       if str(op) == "Do")
+        assert dessins(pdf.pages[0]) == 1        # recto feuille 1 : (blanche ajoutée, page 1)
+        assert dessins(pdf.pages[1]) == 1        # verso : (2, blanche)
+        assert dessins(pdf.pages[2]) == 2        # feuille 2 recto : (6, 3)
+    assert moteur.proposer_nom([Path("Concert - 1.pdf"), Path("Concert - 2.pdf")], livret=True) \
+        == "Concert - livret.pdf"
