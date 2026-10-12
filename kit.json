@@ -1,0 +1,38 @@
+{
+  "nom_technique": "tutti",
+  "nom_fichier": "Tutti",
+  "nom_affiche": "Tutti",
+  "depot_distribution": "ARP273-ROSE/Tutti",
+  "point_entree": "run.py",
+  "fichier_version": "VERSION",
+  "icone": "logo.ico",
+  "appid": "{{F61CA1BF-56A1-58EF-8503-D8136B3A8578}",
+  "modules": [
+    "run.py",
+    "reporting.py",
+    "updater.py"
+  ],
+  "paquets": [
+    "tutti"
+  ],
+  "assets": [
+    "VERSION",
+    "README.md",
+    "CHANGELOG.md",
+    "logo.ico",
+    "logo.png",
+    "logo_64.png",
+    "docs"
+  ],
+  "requirements": "requirements.txt",
+  "pip": [],
+  "binaires": [],
+  "fichiers_proteges": [],
+  "verification_import": [
+    "tutti",
+    "tutti.moteur",
+    "tutti.i18n",
+    "tutti.style",
+    "pikepdf"
+  ]
+}

@@ -1,0 +1,260 @@
+\input{preambule}
+\usepackage[english]{babel}
+\usepackage[colorlinks=true,linkcolor=bordeaux,urlcolor=bordeaux]{hyperref}
+\hypersetup{pdftitle={Tutti — user guide},pdfauthor={},pdfcreator={Tutti}}
+\boite{astucebox}{orl}{or!85!black}{\faLightbulb}{Good to know}
+\boite{securitebox}{sapinl}{sapin}{\faShield*}{Your files are safe}
+\newcommand{\astuce}[1]{\par\needspace{5\baselineskip}\begin{astucebox}#1\end{astucebox}}
+\fancyhead[L]{\sffamily\small\color{bordeaux}\textbf{TUTTI — USER GUIDE}}
+\fancyhead[R]{\sffamily\small\color{summit}\leftmark}
+\input{version}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{2.2cm}
+\includegraphics[width=3.6cm]{../../logo_1024.png}\par
+\vspace{8mm}
+{\sffamily\Huge\bfseries\color{bordeaux} TUTTI\par}
+\vspace{3mm}
+{\sffamily\LARGE\color{ink} Merge, convert and split PDF files\par}
+\vspace{2mm}
+{\sffamily\large\color{summit} User guide \textbullet{} version \versiontutti\par}
+\vspace{12mm}
+\begin{tcolorbox}[enhanced,width=0.8\linewidth,colback=orl,colframe=or,arc=4pt,boxrule=1.2pt,left=5mm,right=5mm,top=3mm,bottom=3mm]
+\sffamily\centering
+\textit{Tutti}: “all together”, in music.\\[2mm]
+\raggedright
+\textbf{1.} Drop the PDF files \quad \textbf{2.} Put them in order \quad \textbf{3.} Check the name \quad \textbf{4.} Merge
+\end{tcolorbox}
+\vfill
+{\footnotesize\color{summit}\sffamily Windows \textbullet{} macOS \textbullet{} Linux\par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{What Tutti does}
+
+Tutti does three things, without going through a website:
+\begin{itemize}
+\item it \textbf{merges} several files into one PDF, in the order you choose, with \textbf{one bookmark
+      per part} — designed for sheet music: full score and separate parts;
+\item it \textbf{converts to PDF} images (photos, scans) and Word, Excel and PowerPoint documents;
+\item it \textbf{splits} a PDF into one file per page, or by page ranges.
+\end{itemize}
+Your documents stay on your computer: nothing is sent over the Internet.
+
+\begin{securitebox}
+\begin{itemize}
+\item The original files are \textbf{never modified}: Tutti reads them and only writes the new PDF.
+\item Pages are copied \textbf{as they are}, with no loss of quality and no “re-printing”.
+\item Tutti refuses to write over one of the files being merged.
+\item A power cut during the merge never leaves a half-written PDF behind.
+\end{itemize}
+\end{securitebox}
+
+\section{Installing Tutti}
+
+Download the latest version from the project's \textbf{Releases} page, picking the file for your
+system:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{>{\bfseries}l l}
+\toprule
+Windows & \fichier{Tutti-Setup-X.Y.Z.exe} \\
+macOS (Apple M1, M2… chips) & \fichier{Tutti-X.Y.Z-macos-arm64.dmg} \\
+macOS (Intel processor) & \fichier{Tutti-X.Y.Z-macos-x86\_64.dmg} \\
+Linux & \fichier{Tutti-X.Y.Z-linux-x86\_64.tar.gz} (or \fichier{-arm64}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{No administrator password is needed}: Tutti installs into your own user profile.
+
+\subsection*{Windows}
+Run \fichier{Tutti-Setup-X.Y.Z.exe}. On the very first launch Windows may show “Windows protected
+your PC”, because the installer is not signed: click \menu{More info}, then \menu{Run anyway}.
+This warning appears only once.
+
+\subsection*{macOS}
+Open the \fichier{.dmg} file and drag Tutti into \menu{Applications}. On the first launch macOS
+refuses to open an unsigned application: \textbf{right-click} Tutti, choose \menu{Open}, and confirm.
+
+\subsection*{Linux}
+Unpack the archive and run \fichier{installer.sh}. Tutti installs into
+\fichier{\textasciitilde/.local/share} and appears in the applications menu.
+
+\section{First launch}
+
+Tutti opens in your system's language, French or English. The \menu{Language} menu lets you
+force either one.
+
+You are asked once whether to \textbf{send a report automatically if Tutti runs into a problem}.
+The report contains the program and system versions and the error; your file names and user name
+are hidden. You can change your mind at any time in the \menu{Help} menu.
+
+\capture[0.82]{../capture_vide-en.png}
+
+\section{Merging PDF files, step by step}
+
+\subsection{Adding the files}
+\begin{itemize}
+\item \textbf{Drag} the PDF files from Explorer (or the Finder) into the large list;
+\item or drag \textbf{a whole folder}: every PDF it contains is added, sorted by name;
+\item or use \menu{Add PDF files…} \ (\touche{Ctrl}+\touche{O}) and \menu{Add a folder…}.
+\end{itemize}
+Each file shows its page count and size. A file already in the list is not added twice.
+
+\subsection{Putting them in order}
+The order of the list is the order of the merged PDF.
+\begin{itemize}
+\item \textbf{Drag} a file up or down inside the list;
+\item or select it and use \menu{▲ Move up} / \menu{▼ Move down}
+      (\touche{Alt}+\touche{↑} / \touche{Alt}+\touche{↓});
+\item or click \menu{Sort by name}. The order is “natural”: \fichier{2 Flute} comes before
+      \fichier{10 Violin}, as you would expect.
+\end{itemize}
+\menu{Remove} \ (\touche{Del}) takes the selected files out of the list; \menu{Clear all} empties
+it. \textbf{No file is deleted from the disk.}
+
+\capture[0.82]{../capture_triee-en.png}
+
+\subsection{Checking the output file name}
+Tutti suggests a name based on what the file names have in common:
+\fichier{Symphony No. 5 - 01 Full score}, \fichier{Symphony No. 5 - 02 Flute}… give
+\fichier{Symphony No. 5 - complete.pdf}, in the folder of the first file. You can edit it
+directly, or pick another location with \menu{Browse…}.
+
+\subsection{Merging}
+Click \menu{Merge}. A bar shows the progress; the button turns into \menu{Cancel} while working.
+When done, the PDF opens (option \menu{Open the PDF when done}).
+
+\astuce{If the output file already exists, Tutti asks whether to replace it. If it is open in a
+PDF reader, close it first: Windows does not allow replacing an open file.}
+
+\section{Options}
+
+\begin{description}[style=nextline,leftmargin=5mm,font=\sffamily\bfseries\color{bordeaux}]
+\item[One bookmark per file]
+The merged PDF contains one bookmark per original file (“02 Flute”, “10 Violin I”…), shown in the
+side panel of your PDF reader. The bookmark is the file name without the part common to all.
+\item[Start each part on a right-hand page]
+For double-sided printing: when a part ends on a right-hand page, a blank page is inserted so that
+the next part also starts on a right-hand page.
+\item[Open the PDF when done]
+Opens the result in your usual PDF reader. When unchecked, Tutti offers to open the PDF or its folder.
+\end{description}
+
+\section{When a file causes trouble}
+
+A damaged or password-protected file is shown \textcolor{bordeaux}{in red} in the list, with the
+reason, \textbf{before} merging. The \menu{Merge} button stays greyed out while it is there: select
+it and click \menu{Remove}.
+
+\capture[0.82]{../capture_erreur-en.png}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.36\linewidth} X}
+\toprule
+\textbf{Message} & \textbf{What to do} \\
+\midrule
+Unreadable or damaged PDF & Reopen the original document and export it to PDF again. \\
+Password protected & Save a copy without a password from your PDF reader. \\
+This PDF has no pages & The file is empty: remove it. \\
+The file is probably open in another program & Close the merged PDF in your reader, then try again. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Converting images and documents to PDF}
+
+In the \menu{Merge and convert} tab, the list also accepts:
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\linewidth}{>{\bfseries}l X}
+\toprule
+Images & JPEG, PNG, TIFF (including multi-page), BMP, GIF, WebP \\
+Word & \fichier{.doc}, \fichier{.docx}, \fichier{.odt}, \fichier{.rtf} \\
+Excel & \fichier{.xls}, \fichier{.xlsx}, \fichier{.ods} \\
+PowerPoint & \fichier{.ppt}, \fichier{.pptx}, \fichier{.odp} \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Each file is converted as soon as it enters the list; it shows “(image)” or “(converted document)”
+and its page count. You can then order it and merge it with PDF files like any other file.
+
+\textbf{To convert a single file}, drop it alone into the list: Tutti suggests the same name with
+the \fichier{.pdf} extension (\fichier{Letter.docx} → \fichier{Letter.pdf}), and \menu{Merge}
+produces the PDF.
+
+\begin{itemize}
+\item \textbf{Images}: one image per page, on A4 in the image's orientation, without distortion.
+      A JPEG photo is inserted as is: no loss of quality.
+\item \textbf{Word, Excel, PowerPoint}: the layout is done by \textbf{Microsoft Office} when it is
+      installed (Windows), otherwise by \textbf{LibreOffice} (free, \fichier{libreoffice.org}), required
+      on Mac and Linux. It works invisibly, read-only, with macros disabled. If neither is installed,
+      the file is shown in red.
+\end{itemize}
+
+\section{Splitting a PDF}
+
+\menu{Split} tab:
+\begin{enumerate}
+\item drop the PDF file(s) to split into the list;
+\item choose \menu{One page per file}, or \menu{By page ranges}, typing the ranges separated by
+      commas: \fichier{1-8, 9-16, 17-} (“\fichier{17-}” means “from page 17 to the end”);
+\item choose where to save the files: by default, a \fichier{<name> - pages} folder is created
+      next to each PDF;
+\item click \menu{Split}.
+\end{enumerate}
+The files are named \fichier{Score - page 01.pdf}, \fichier{Score - page 02.pdf}… or
+\fichier{Score - pages 01-08.pdf}: the leading zeros keep them in order in Explorer.
+The original PDF is not modified. If files with the same name already exist, Tutti asks before
+replacing them.
+
+\capture[0.82]{../capture_decoupe-en.png}
+
+\section{Updates}
+
+At startup Tutti quietly checks for a new version. If there is one, it offers to install it: it
+downloads it, installs it and restarts. Nothing has to be downloaded by hand. You can also check
+yourself: \menu{Help} → \menu{Check for updates}.
+
+\section{Reporting a problem}
+
+\menu{Help} → \menu{Report a problem…}: describe what happened, then \menu{Send}. Without an
+Internet connection, the report is saved to a file whose location Tutti shows you.
+
+\section{Privacy}
+
+\begin{itemize}
+\item Tutti only goes online to check for updates and, with your consent, to send error reports.
+\item None of your files is ever sent. In reports, file names and the user name are hidden.
+\end{itemize}
+
+\section{Keyboard shortcuts}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{ll}
+\toprule
+\touche{Ctrl}+\touche{O} & Add PDF files \\
+\touche{Alt}+\touche{↑} \ / \ \touche{Alt}+\touche{↓} & Move the selected file up / down \\
+\touche{Del} & Remove the selected file from the list \\
+\touche{F1} & Open this guide \\
+\touche{Ctrl}+\touche{Q} & Quit \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vfill
+{\footnotesize\color{summit}\sffamily
+Tutti uses qpdf (through pikepdf) and the Source Sans 3 and EB Garamond fonts (SIL Open Font
+License). Examples in this guide use fictitious files.\par}
+
+\end{document}

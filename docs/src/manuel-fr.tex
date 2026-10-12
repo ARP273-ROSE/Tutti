@@ -1,0 +1,272 @@
+\input{preambule}
+\usepackage[french]{babel}
+\usepackage[colorlinks=true,linkcolor=bordeaux,urlcolor=bordeaux]{hyperref}
+\hypersetup{pdftitle={Tutti — manuel d'utilisation},pdfauthor={},pdfcreator={Tutti}}
+\boite{astucebox}{orl}{or!85!black}{\faLightbulb}{Bon à savoir}
+\boite{securitebox}{sapinl}{sapin}{\faShield*}{Vos fichiers sont en sécurité}
+\boite{attentionbox}{bordeauxl}{bordeaux}{\faExclamationTriangle}{Attention}
+\newcommand{\astuce}[1]{\par\needspace{5\baselineskip}\begin{astucebox}#1\end{astucebox}}
+\fancyhead[L]{\sffamily\small\color{bordeaux}\textbf{TUTTI — MANUEL}}
+\fancyhead[R]{\sffamily\small\color{summit}\leftmark}
+\input{version}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{2.2cm}
+\includegraphics[width=3.6cm]{../../logo_1024.png}\par
+\vspace{8mm}
+{\sffamily\Huge\bfseries\color{bordeaux} TUTTI\par}
+\vspace{3mm}
+{\sffamily\LARGE\color{ink} Assembler, convertir et découper des PDF\par}
+\vspace{2mm}
+{\sffamily\large\color{summit} Manuel d'utilisation \textbullet{} version \versiontutti\par}
+\vspace{12mm}
+\begin{tcolorbox}[enhanced,width=0.8\linewidth,colback=orl,colframe=or,arc=4pt,boxrule=1.2pt,left=5mm,right=5mm,top=3mm,bottom=3mm]
+\sffamily\centering
+\textit{Tutti} : « tous ensemble », en musique.\\[2mm]
+\raggedright
+\textbf{1.} Glissez les PDF \quad \textbf{2.} Rangez-les \quad \textbf{3.} Vérifiez le nom \quad \textbf{4.} Assemblez
+\end{tcolorbox}
+\vfill
+{\footnotesize\color{summit}\sffamily Windows \textbullet{} macOS \textbullet{} Linux\par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{À quoi sert Tutti}
+
+Tutti fait trois choses, sans passer par un site Internet :
+\begin{itemize}
+\item il \textbf{réunit} plusieurs fichiers en un seul PDF, dans l'ordre que vous choisissez, avec un
+      \textbf{signet par partie} — pensé pour les partitions : conducteur et parties séparées ;
+\item il \textbf{convertit en PDF} les images (photos, scans) et les documents Word, Excel et PowerPoint ;
+\item il \textbf{découpe} un PDF en un fichier par page, ou par plages de pages.
+\end{itemize}
+Vos documents restent sur votre ordinateur : rien n'est envoyé sur Internet.
+
+\begin{securitebox}
+\begin{itemize}
+\item Les fichiers d'origine ne sont \textbf{jamais modifiés} : Tutti les lit, il n'écrit que le nouveau PDF.
+\item Les pages sont recopiées \textbf{telles quelles}, sans perte de qualité ni « réimpression ».
+\item Tutti refuse d'écrire par-dessus l'un des fichiers à assembler.
+\item Une coupure de courant pendant l'assemblage ne laisse jamais de PDF à moitié écrit.
+\end{itemize}
+\end{securitebox}
+
+\section{Installer Tutti}
+
+Téléchargez la dernière version sur la page \textbf{Releases} du projet, en choisissant le fichier
+de votre système :
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{>{\bfseries}l l}
+\toprule
+Windows & \fichier{Tutti-Setup-X.Y.Z.exe} \\
+macOS (puces Apple M1, M2…) & \fichier{Tutti-X.Y.Z-macos-arm64.dmg} \\
+macOS (processeur Intel) & \fichier{Tutti-X.Y.Z-macos-x86\_64.dmg} \\
+Linux & \fichier{Tutti-X.Y.Z-linux-x86\_64.tar.gz} (ou \fichier{-arm64}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Aucun mot de passe administrateur n'est demandé} : Tutti s'installe dans votre profil.
+
+\subsection*{Windows}
+Lancez \fichier{Tutti-Setup-X.Y.Z.exe}. Au tout premier lancement, Windows peut afficher
+« Windows a protégé votre ordinateur », parce que l'installeur n'est pas signé :
+cliquez sur \menu{Informations complémentaires}, puis \menu{Exécuter quand même}.
+Cet avertissement n'apparaît qu'une seule fois.
+
+\subsection*{macOS}
+Ouvrez le fichier \fichier{.dmg} et faites glisser Tutti dans \menu{Applications}.
+Au premier lancement, macOS refuse d'ouvrir une application non signée :
+faites un \textbf{clic droit} sur Tutti, choisissez \menu{Ouvrir}, puis confirmez.
+
+\subsection*{Linux}
+Décompressez l'archive et lancez \fichier{installer.sh}. Tutti s'installe dans
+\fichier{\textasciitilde/.local/share} et apparaît dans le menu des applications.
+
+\section{Premier lancement}
+
+Tutti s'ouvre dans la langue de votre système, français ou anglais. Le menu \menu{Langue}
+permet de forcer l'une ou l'autre.
+
+Une question vous est posée une seule fois : \textbf{envoyer automatiquement un rapport si
+Tutti rencontre un problème}. Le rapport contient la version du programme et du système et
+l'erreur rencontrée ; les noms de vos fichiers et votre nom d'utilisateur sont masqués.
+Vous pouvez changer d'avis à tout moment dans le menu \menu{Aide}.
+
+\capture[0.82]{../capture_vide-fr.png}
+
+\section{Assembler des PDF, pas à pas}
+
+\subsection{Ajouter les fichiers}
+\begin{itemize}
+\item \textbf{Glissez} les PDF depuis l'Explorateur (ou le Finder) dans la grande liste ;
+\item ou glissez \textbf{un dossier entier} : tous les PDF qu'il contient sont ajoutés, rangés par nom ;
+\item ou utilisez \menu{Ajouter des PDF…} \ (\touche{Ctrl}+\touche{O}) et \menu{Ajouter un dossier…}.
+\end{itemize}
+Chaque fichier affiche son nombre de pages et sa taille. Un fichier déjà présent n'est pas ajouté
+une seconde fois.
+
+\subsection{Les ranger}
+L'ordre de la liste est l'ordre du PDF final.
+\begin{itemize}
+\item \textbf{Faites glisser} un fichier vers le haut ou vers le bas dans la liste ;
+\item ou sélectionnez-le et utilisez \menu{▲ Monter} / \menu{▼ Descendre}
+      (\touche{Alt}+\touche{↑} / \touche{Alt}+\touche{↓}) ;
+\item ou cliquez sur \menu{Trier par nom}. Le tri est « naturel » : \fichier{2 Flûte} passe avant
+      \fichier{10 Violon}, comme on l'attend.
+\end{itemize}
+\menu{Retirer} \ (\touche{Suppr}) enlève les fichiers sélectionnés de la liste ;
+\menu{Tout effacer} vide la liste. \textbf{Aucun fichier n'est supprimé du disque.}
+
+\capture[0.82]{../capture_triee-fr.png}
+
+\subsection{Vérifier le nom du fichier final}
+Tutti propose un nom à partir de la partie commune des noms des fichiers :
+\fichier{Symphonie n°5 - 01 Conducteur}, \fichier{Symphonie n°5 - 02 Flûte}… donnent
+\fichier{Symphonie n°5 - complet.pdf}, dans le dossier du premier fichier. Vous pouvez le
+modifier directement, ou choisir un autre emplacement avec \menu{Choisir…}.
+
+\subsection{Assembler}
+Cliquez sur \menu{Assembler}. Une barre montre l'avancement ; le bouton devient
+\menu{Annuler} pendant le travail. Une fois terminé, le PDF s'ouvre (option
+\menu{Ouvrir le PDF une fois terminé}).
+
+\astuce{Si le fichier final existe déjà, Tutti demande s'il faut le remplacer. S'il est ouvert
+dans un lecteur PDF, fermez-le d'abord : Windows interdit de remplacer un fichier ouvert.}
+
+\section{Les options}
+
+\begin{description}[style=nextline,leftmargin=5mm,font=\sffamily\bfseries\color{bordeaux}]
+\item[Un signet par fichier]
+Le PDF final contient un signet par fichier d'origine (« 02 Flûte », « 10 Violon I »…), affiché
+dans le panneau latéral de votre lecteur PDF. Le nom du signet est celui du fichier, sans la
+partie commune à tous.
+\item[Chaque partie commence sur une page de droite]
+Pour l'impression recto-verso : si une partie se termine sur une page de droite, une page blanche
+est insérée, pour que la partie suivante commence elle aussi sur une page de droite.
+\item[Ouvrir le PDF une fois terminé]
+Ouvre le résultat dans votre lecteur PDF habituel. Décochée, Tutti propose d'ouvrir le PDF
+ou son dossier.
+\end{description}
+
+\section{Quand un fichier pose problème}
+
+Un fichier abîmé ou protégé par un mot de passe est signalé \textcolor{bordeaux}{en rouge} dans
+la liste, avec la raison, \textbf{avant} l'assemblage. Le bouton \menu{Assembler} reste grisé
+tant qu'il est présent : sélectionnez-le et cliquez sur \menu{Retirer}.
+
+\capture[0.82]{../capture_erreur-fr.png}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.36\linewidth} X}
+\toprule
+\textbf{Message} & \textbf{Que faire} \\
+\midrule
+PDF illisible ou abîmé & Rouvrez le document d'origine et exportez-le à nouveau en PDF. \\
+Protégé par un mot de passe & Enregistrez une copie sans mot de passe depuis votre lecteur PDF. \\
+Ce PDF ne contient aucune page & Le fichier est vide : retirez-le. \\
+Le fichier est sans doute ouvert dans un autre programme & Fermez le PDF final dans votre lecteur, puis recommencez. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Convertir des images et des documents en PDF}
+
+Dans l'onglet \menu{Assembler et convertir}, la liste accepte aussi :
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\linewidth}{>{\bfseries}l X}
+\toprule
+Images & JPEG, PNG, TIFF (y compris plusieurs pages), BMP, GIF, WebP \\
+Word & \fichier{.doc}, \fichier{.docx}, \fichier{.odt}, \fichier{.rtf} \\
+Excel & \fichier{.xls}, \fichier{.xlsx}, \fichier{.ods} \\
+PowerPoint & \fichier{.ppt}, \fichier{.pptx}, \fichier{.odp} \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Chaque fichier est converti dès qu'il arrive dans la liste ; il apparaît avec la mention
+« (image) » ou « (document converti) » et son nombre de pages. Vous pouvez ensuite le ranger
+et l'assembler avec des PDF comme n'importe quel autre fichier.
+
+\textbf{Pour convertir un seul fichier}, glissez-le seul dans la liste : Tutti propose
+le même nom avec l'extension \fichier{.pdf} (\fichier{Lettre.docx} → \fichier{Lettre.pdf}),
+puis \menu{Assembler} fabrique le PDF.
+
+\begin{itemize}
+\item \textbf{Images} : une image par page, au format A4 dans le sens de l'image, sans déformation.
+      Une photo JPEG est insérée telle quelle : aucune perte de qualité.
+\item \textbf{Word, Excel, PowerPoint} : la mise en page est confiée à \textbf{Microsoft Office}
+      s'il est installé (Windows), sinon à \textbf{LibreOffice} (gratuit, \fichier{libreoffice.org}),
+      indispensable sur Mac et Linux. Le logiciel travaille invisible, en lecture seule, macros coupées.
+      Si aucun des deux n'est installé, le fichier est signalé en rouge.
+\end{itemize}
+
+\section{Découper un PDF}
+
+Onglet \menu{Découper} :
+\begin{enumerate}
+\item glissez le ou les PDF à découper dans la liste ;
+\item choisissez \menu{Une page par fichier}, ou \menu{Par plages de pages} en écrivant les
+      plages séparées par des virgules : \fichier{1-8, 9-16, 17-} (« \fichier{17-} » veut dire
+      « de la page 17 à la fin ») ;
+\item choisissez où ranger les fichiers : par défaut, un dossier \fichier{<nom> - pages} est créé
+      à côté de chaque PDF ;
+\item cliquez sur \menu{Découper}.
+\end{enumerate}
+Les fichiers s'appellent \fichier{Partition - page 01.pdf}, \fichier{Partition - page 02.pdf}… ou
+\fichier{Partition - pages 01-08.pdf} : les zéros gardent le bon ordre dans l'Explorateur.
+Le PDF d'origine n'est pas modifié. Si des fichiers du même nom existent déjà, Tutti demande
+avant de les remplacer.
+
+\capture[0.82]{../capture_decoupe-fr.png}
+
+\section{Mises à jour}
+
+Au démarrage, Tutti vérifie discrètement s'il existe une nouvelle version. Si c'est le cas, il
+propose de l'installer : il la télécharge, l'installe et redémarre. Rien n'est à télécharger
+à la main. Vous pouvez aussi vérifier vous-même : \menu{Aide} → \menu{Rechercher une mise à jour}.
+
+\section{Signaler un problème}
+
+\menu{Aide} → \menu{Signaler un problème…} : décrivez ce qui s'est passé, puis \menu{Envoyer}.
+Sans connexion Internet, le signalement est enregistré dans un fichier que Tutti vous indique.
+
+\section{Confidentialité}
+
+\begin{itemize}
+\item Tutti n'accède à Internet que pour vérifier les mises à jour et, avec votre accord, envoyer
+      les rapports d'incident.
+\item Aucun de vos fichiers n'est envoyé. Dans les rapports, les noms de fichiers et le nom
+      d'utilisateur sont masqués.
+\end{itemize}
+
+\section{Raccourcis clavier}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{ll}
+\toprule
+\touche{Ctrl}+\touche{O} & Ajouter des PDF \\
+\touche{Alt}+\touche{↑} \ / \ \touche{Alt}+\touche{↓} & Monter / descendre le fichier sélectionné \\
+\touche{Suppr} & Retirer le fichier sélectionné de la liste \\
+\touche{F1} & Ouvrir ce manuel \\
+\touche{Ctrl}+\touche{Q} & Quitter \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vfill
+{\footnotesize\color{summit}\sffamily
+Tutti utilise qpdf (via pikepdf) et les polices Source Sans 3 et EB Garamond (SIL Open Font
+License). Exemples de ce manuel : fichiers fictifs.\par}
+
+\end{document}
