@@ -85,7 +85,7 @@ def test_parcours_complet(app, tmp_path, monkeypatch):
     assert attendre(app, lambda: not w._en_cours)
     sortie = tmp_path / "Symphonie - complet.pdf"
     assert sortie.exists()
-    assert ouverts and ouverts[0].toLocalFile() == str(sortie)
+    assert ouverts and Path(ouverts[0].toLocalFile()) == sortie
     with pikepdf.open(sortie) as pdf:
         assert [int(p.mediabox[2]) for p in pdf.pages] == [500, 502, 502, 502, 501, 501]
         with pdf.open_outline() as plan:
@@ -133,7 +133,9 @@ def test_onglet_decouper(app, tmp_path, monkeypatch):
     w.onglets.setCurrentIndex(1)
     assert not w.b_decouper.isEnabled()
     w.ajouter_a_decouper([str(src), str(tmp_path / "ignore.txt")])
-    assert w.liste_d.count() == 1 and w.b_decouper.isEnabled()
+    assert w.liste_d.count() == 1
+    assert attendre(app, lambda: all(i is not None for i in w._infos_d()))
+    assert w.b_decouper.isEnabled()
     w.r_plages.setChecked(True)
     w.e_plages.setText("1-2, 3-")
     w._decouper_ou_annuler()
@@ -141,4 +143,23 @@ def test_onglet_decouper(app, tmp_path, monkeypatch):
     dossier = tmp_path / "Partition - pages"
     assert sorted(p.name for p in dossier.iterdir()) == ["Partition - pages 1-2.pdf",
                                                          "Partition - pages 3-5.pdf"]
+    w.close()
+
+
+def test_decouper_une_image_multipage(app, tmp_path, monkeypatch):
+    """Combinaison : un document non PDF (ici un TIFF de 3 pages, comme un
+    Word de 3 pages) découpé en 3 PDF d'une page, nommés d'après l'original."""
+    from PIL import Image
+    from PyQt6 import QtGui
+    monkeypatch.setattr(QtGui.QDesktopServices, "openUrl", lambda url: True)
+    tif = tmp_path / "Scan.tif"
+    images = [Image.new("L", (600, 800), v) for v in (40, 120, 220)]
+    images[0].save(tif, save_all=True, append_images=images[1:])
+    w = FenetrePrincipale()
+    w.ajouter_a_decouper([str(tif)])
+    assert attendre(app, lambda: all(i is not None for i in w._infos_d()))
+    w._decouper_ou_annuler()
+    assert attendre(app, lambda: not w._decoupe_en_cours)
+    assert sorted(p.name for p in (tmp_path / "Scan - pages").iterdir()) == [
+        "Scan - page 1.pdf", "Scan - page 2.pdf", "Scan - page 3.pdf"]
     w.close()

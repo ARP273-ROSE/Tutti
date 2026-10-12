@@ -104,7 +104,7 @@ are hidden. You can change your mind at any time in the \menu{Help} menu.
 \begin{itemize}
 \item \textbf{Drag} the PDF files from Explorer (or the Finder) into the large list;
 \item or drag \textbf{a whole folder}: every PDF it contains is added, sorted by name;
-\item or use \menu{Add PDF files…} \ (\touche{Ctrl}+\touche{O}) and \menu{Add a folder…}.
+\item or use \menu{Add files…} \ (\touche{Ctrl}+\touche{O}) and \menu{Add a folder…}.
 \end{itemize}
 Each file shows its page count and size. A file already in the list is not added twice.
 
@@ -205,7 +205,8 @@ produces the PDF.
 
 \menu{Split} tab:
 \begin{enumerate}
-\item drop the PDF file(s) to split into the list;
+\item drop the file(s) to split into the list: PDF files, but also Word, Excel, PowerPoint
+      documents or images (converted automatically, as in the other tab);
 \item choose \menu{One page per file}, or \menu{By page ranges}, typing the ranges separated by
       commas: \fichier{1-8, 9-16, 17-} (“\fichier{17-}” means “from page 17 to the end”);
 \item choose where to save the files: by default, a \fichier{<name> - pages} folder is created
@@ -218,6 +219,16 @@ The original PDF is not modified. If files with the same name already exist, Tut
 replacing them.
 
 \capture[0.82]{../capture_decoupe-en.png}
+
+\subsection*{Combining the functions}
+\begin{itemize}
+\item \textbf{A 6-page Word document into 6 one-page PDF files}: drop the \fichier{.docx} into the
+      \menu{Split} tab and choose \menu{One page per file}.
+\item \textbf{Photos and PDF files in one document}: drop them together into \menu{Merge and convert},
+      put them in order, merge.
+\item \textbf{An Excel sheet to PDF}: drop it alone into \menu{Merge and convert}.
+\item \textbf{Pages 3 to 5 of a presentation}: drop the \fichier{.pptx} into \menu{Split}, ranges \fichier{3-5}.
+\end{itemize}
 
 \section{Updates}
 

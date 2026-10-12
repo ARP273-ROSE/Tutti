@@ -241,7 +241,7 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
         self.liste_d.itemSelectionChanged.connect(self._majeur_decoupe)
         ligne.addWidget(self.liste_d, 1)
         bd = QtWidgets.QVBoxLayout()
-        b = QtWidgets.QPushButton(tr("bouton.ajouter_pdf"))
+        b = QtWidgets.QPushButton(tr("bouton.ajouter"))
         b.clicked.connect(self._choisir_a_decouper)
         bd.addWidget(b)
         self.bd_retirer = QtWidgets.QPushButton(tr("bouton.retirer"))
@@ -316,20 +316,27 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
         self._majeur_decoupe()
 
     def ajouter_a_decouper(self, elements):
+        """PDF, images ou documents : les non-PDF sont convertis à l'analyse,
+        puis découpés comme un PDF (un Word de 6 pages donne 6 PDF)."""
         deja = {self.liste_d.item(i).data(ROLE_CHEMIN) for i in range(self.liste_d.count())}
-        for p in moteur.lister_pdf(elements, extensions={".pdf"}):
-            if str(p) in deja:
-                continue
-            it = QtWidgets.QListWidgetItem(p.name)
+        nouveaux = [p for p in moteur.lister_pdf(elements) if str(p) not in deja]
+        for p in nouveaux:
+            it = QtWidgets.QListWidgetItem(f"{p.name}   —   {tr('liste.analyse')}")
             it.setData(ROLE_CHEMIN, str(p))
             it.setToolTip(str(p))
-            it.setIcon(self.style().standardIcon(QtWidgets.QStyle.StandardPixmap.SP_FileIcon))
+            it.setFlags(it.flags() & ~Qt.ItemFlag.ItemIsDropEnabled)
             self.liste_d.addItem(it)
+        if nouveaux:
+            threading.Thread(target=self._analyser_fond, args=(nouveaux,),
+                             daemon=True, name="tutti-analyse-d").start()
         self._majeur_decoupe()
+
+    def _infos_d(self):
+        return [self.liste_d.item(i).data(ROLE_INFO) for i in range(self.liste_d.count())]
 
     def _choisir_a_decouper(self):
         fichiers, _ = QtWidgets.QFileDialog.getOpenFileNames(
-            self, tr("dlg.ouvrir_pdf"), self._dernier_dossier(), tr("dlg.filtre"))
+            self, tr("dlg.ouvrir_pdf"), self._dernier_dossier(), self._filtre_entrees())
         if fichiers:
             self._memoriser_dossier(Path(fichiers[0]).parent)
             self.ajouter_a_decouper(fichiers)
@@ -344,7 +351,9 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
 
     def _majeur_decoupe(self):
         libre = not self._decoupe_en_cours
+        infos = self._infos_d()
         pret = (libre and self.liste_d.count() > 0
+                and all(i is not None and i.utilisable for i in infos)
                 and (self.r_pages.isChecked() or self.e_plages.text().strip())
                 and (self.r_dest_auto.isChecked() or self.e_dest.text()))
         self.b_decouper.setEnabled(bool(pret) or self._decoupe_en_cours)
@@ -361,23 +370,18 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
             self.b_decouper.setEnabled(False)
             self.b_decouper.setText(tr("bouton.annulation"))
             return
-        sources = [Path(self.liste_d.item(i).data(ROLE_CHEMIN)) for i in range(self.liste_d.count())]
         travaux = []
-        import pikepdf
-        for s in sources:
+        for info in self._infos_d():
+            s, nb = info.chemin, info.pages
             try:
-                with pikepdf.open(s) as pdf:
-                    nb = len(pdf.pages)
                 plages = (moteur.lire_plages(self.e_plages.text(), nb)
                           if self.r_plages.isChecked() else moteur.plages_par_page(nb))
             except ErreurTutti as e:
                 QtWidgets.QMessageBox.warning(self, "Tutti", f"{s.name} :\n{e}")
                 return
-            except Exception:
-                QtWidgets.QMessageBox.warning(self, "Tutti", tr("err.lecture_illisible", nom=s.name))
-                return
             dossier = self._dossier_decoupe(s)
-            travaux.append((s, dossier, plages, [dossier / n for n in moteur.noms_decoupe(s, plages, nb)]))
+            travaux.append((s, info.pdf or s, dossier, plages,
+                            [dossier / n for n in moteur.noms_decoupe(s, plages, nb)]))
         existants = [c for *_, cibles in travaux for c in cibles if c.exists()]
         if existants:
             r = QtWidgets.QMessageBox.question(
@@ -387,7 +391,7 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
             if r != QtWidgets.QMessageBox.StandardButton.Yes:
                 return
         self.reglages.setValue("ouvrir_dossier", self.c_ouvrir_dossier.isChecked())
-        total = sum(len(t[2]) for t in travaux)
+        total = sum(len(t[3]) for t in travaux)
         self._decoupe_en_cours = True
         self._annuler_d.clear()
         self.barre_d.setRange(0, max(1, total))
@@ -400,10 +404,10 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
         def travail():
             ecrits, deja = [], 0
             try:
-                for s, dossier, plages, _ in travaux:
+                for s, lire, dossier, plages, _ in travaux:
                     base = deja
                     fichiers = moteur.decouper(
-                        s, dossier, plages, annule=self._annuler_d.is_set,
+                        lire, dossier, plages, original=s, annule=self._annuler_d.is_set,
                         progression=lambda f, t, nom, b=base: self.signaux.progression_d.emit(
                             b + f, total, nom))
                     ecrits.extend(fichiers)
@@ -516,10 +520,14 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
             self.signaux.analyse_finie.emit()
 
     def _item_pour(self, chemin: Path):
+        """L'élément d'un fichier, dans l'une ou l'autre des deux listes."""
         cle = str(chemin)
-        for i in range(self.liste.count()):
-            if self.liste.item(i).data(ROLE_CHEMIN) == cle:
-                return self.liste.item(i)
+        for liste in (self.liste, getattr(self, "liste_d", None)):
+            if liste is None:
+                continue
+            for i in range(liste.count()):
+                if liste.item(i).data(ROLE_CHEMIN) == cle and liste.item(i).data(ROLE_INFO) is None:
+                    return liste.item(i)
         return None
 
     def _recevoir_analyse(self, info: InfoPdf):
@@ -542,6 +550,8 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
             it.setIcon(style.standardIcon(QtWidgets.QStyle.StandardPixmap.SP_MessageBoxWarning))
             it.setForeground(QtGui.QColor("#B5382B"))
         self._majeur_etat()
+        if hasattr(self, "liste_d"):
+            self._majeur_decoupe()
 
     def _analyse_finie(self):
         self._analyses_en_cours = max(0, self._analyses_en_cours - 1)

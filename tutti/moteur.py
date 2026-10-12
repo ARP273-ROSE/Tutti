@@ -543,18 +543,42 @@ SEUIL_PAGES_PARALLELE = 40
 def decouper(source: Path, dossier: Path, plages: Sequence[tuple[int, int]] | None = None, *,
              progression: Callable[[int, int, str], None] | None = None,
              annule: Callable[[], bool] | None = None,
-             processus: int | None = None) -> list[Path]:
+             processus: int | None = None,
+             original: Path | None = None) -> list[Path]:
     """Découpe `source` en plusieurs PDF dans `dossier` (créé au besoin).
 
     Sans `plages`, une page par fichier. Au-delà de quelques dizaines de
     fichiers à écrire, le travail est réparti sur les cœurs du processeur.
     Renvoie la liste des fichiers écrits. Le fichier d'origine n'est jamais
-    modifié ; un fichier déjà présent porte le même nom est remplacé (la
-    fenêtre demande confirmation avant).
+    modifié ; un fichier déjà présent portant le même nom est remplacé (la
+    fenêtre demande confirmation avant). `original` est le document dont
+    `source` est la conversion (Word, image…) : il donne son nom aux fichiers.
+    Un document non PDF passé directement en `source` est converti d'abord.
     """
     import pikepdf
 
     source = Path(source)
+    original = Path(original) if original else source
+    temporaire = None
+    if type_fichier(source) not in (None, "pdf"):
+        temporaire = tempfile.TemporaryDirectory(prefix="tutti-conv-")
+        try:
+            source = conversion.convertir(source, Path(temporaire.name))
+        except ErreurConversion as e:
+            temporaire.cleanup()
+            raise ErreurTutti(tr("err.conversion_nom", nom=original.name, detail=e))
+    try:
+        return _decouper_pdf(source, original, dossier, plages, progression=progression,
+                             annule=annule, processus=processus)
+    finally:
+        if temporaire:
+            temporaire.cleanup()
+
+
+def _decouper_pdf(source: Path, original: Path, dossier: Path, plages, *,
+                  progression, annule, processus) -> list[Path]:
+    import pikepdf
+
     try:
         with pikepdf.open(source) as pdf:
             nb = len(pdf.pages)
@@ -575,10 +599,10 @@ def decouper(source: Path, dossier: Path, plages: Sequence[tuple[int, int]] | No
         dossier.mkdir(parents=True, exist_ok=True)
     except OSError as e:
         raise ErreurTutti(tr("err.ecriture", detail=e.strerror or type(e).__name__))
-    cibles = [dossier / n for n in noms_decoupe(source, plages, nb)]
+    cibles = [dossier / n for n in noms_decoupe(original, plages, nb)]
     for c in cibles:
-        if _meme_fichier(c, source):
-            raise ErreurTutti(tr("err.ecrase_source", nom=source.name))
+        if _meme_fichier(c, source) or _meme_fichier(c, original):
+            raise ErreurTutti(tr("err.ecrase_source", nom=original.name))
     travaux = [(a, b, str(c)) for (a, b), c in zip(plages, cibles)]
     total = len(travaux)
     coeurs = processus or os.cpu_count() or 1

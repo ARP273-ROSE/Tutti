@@ -23,7 +23,8 @@ Tutti does what online PDF tools do, without uploading anything:
 - **Convert** images (JPEG, PNG, TIFF, BMP, GIF, WebP) and **Word, Excel, PowerPoint** documents
   to PDF. Images are embedded losslessly (a JPEG is inserted as is). Documents are laid out by
   Microsoft Office when installed (Windows), otherwise by LibreOffice — read-only, macros disabled.
-- **Split** a PDF into one file per page, or by page ranges (`1-8, 9-16, 17-`).
+- **Split** a PDF — or a Word, Excel, PowerPoint document or image — into one file per page, or by
+  page ranges (`1-8, 9-16, 17-`). Everything combines: a 6-page Word file becomes six one-page PDFs.
 - Option for double-sided printing: every part starts on a right-hand page.
 
 **Safe**: originals are never modified; Tutti refuses to overwrite a source file; output is written
@@ -57,7 +58,8 @@ Tutti fait ce que font les sites de PDF en ligne, sans rien envoyer sur Internet
   PowerPoint**. Les images sont insérées sans perte (un JPEG tel quel). Les documents sont mis en page
   par Microsoft Office s'il est installé (Windows), sinon par LibreOffice — en lecture seule, macros
   coupées.
-- **Découper** un PDF en un fichier par page, ou par plages de pages (`1-8, 9-16, 17-`).
+- **Découper** un PDF — ou un document Word, Excel, PowerPoint, ou une image — en un fichier par page,
+  ou par plages de pages (`1-8, 9-16, 17-`). Tout se combine : un Word de 6 pages donne six PDF d'une page.
 - Option recto-verso : chaque partie commence sur une page de droite.
 
 **Sûr** : les originaux ne sont jamais modifiés ; Tutti refuse d'écraser un fichier source ; le

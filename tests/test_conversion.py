@@ -136,3 +136,10 @@ def test_decouper_par_plages_en_parallele(tmp_path):
                                     "Gros - pages 61-90.pdf"]
     with pikepdf.open(f2[2]) as pdf:
         assert len(pdf.pages) == 30
+
+
+def test_decouper_directement_une_image(tmp_path):
+    img = tmp_path / "Affiche.png"
+    Image.new("RGB", (800, 600), "white").save(img)
+    fichiers = moteur.decouper(img, tmp_path / "out")
+    assert [f.name for f in fichiers] == ["Affiche - page 1.pdf"]
