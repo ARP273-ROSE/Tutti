@@ -7,9 +7,19 @@
 
 *Tutti*: “all together”, in music. Windows · macOS · Linux · English / Français.
 
-➡️ **[Download / Télécharger](../../releases/latest)** ·
+➡️ **[Download / Télécharger](https://github.com/ARP273-ROSE/Tutti/releases/latest)** ·
 [User guide (PDF)](docs/manuel-en.pdf) · [Manuel (PDF)](docs/manuel-fr.pdf) ·
 [Changes / Historique](CHANGELOG.md)
+
+| | Permanent download links / Liens de téléchargement permanents |
+|---|---|
+| Windows | [Tutti-Setup.exe](https://github.com/ARP273-ROSE/Tutti/releases/latest/download/Tutti-Setup.exe) |
+| macOS Apple Silicon | [Tutti-macos-arm64.dmg](https://github.com/ARP273-ROSE/Tutti/releases/latest/download/Tutti-macos-arm64.dmg) |
+| macOS Intel | [Tutti-macos-x86_64.dmg](https://github.com/ARP273-ROSE/Tutti/releases/latest/download/Tutti-macos-x86_64.dmg) |
+| Linux x86_64 | [Tutti-linux-x86_64.tar.gz](https://github.com/ARP273-ROSE/Tutti/releases/latest/download/Tutti-linux-x86_64.tar.gz) |
+| Linux ARM64 | [Tutti-linux-arm64.tar.gz](https://github.com/ARP273-ROSE/Tutti/releases/latest/download/Tutti-linux-arm64.tar.gz) |
+
+These links always point to the latest version. / Ces liens mènent toujours à la dernière version.
 
 ---
 

@@ -420,7 +420,19 @@ jobs:
           find artefacts -type f -exec cp {} publication/ \;
           # L'archive applicative ne contient que du Python pur : les trois
           # jobs produisent la meme, une seule suffit.
-          ls -lh publication
+          # Copies SANS numero de version : leurs liens
+          # « releases/latest/download/<nom> » restent valables d'une version
+          # a l'autre (liens permanents a donner une fois pour toutes).
+          # L'archive de mise a jour n'est pas dupliquee : l'updater la
+          # reconnait a son prefixe et n'en veut qu'une par plateforme.
+          V="${{ steps.version.outputs.value }}"
+          N="${{ steps.kit.outputs.nom_fichier }}"
+          cd publication
+          for f in "$N-Setup-$V.exe" "$N-$V-"*.dmg "$N-$V-"*.tar.gz; do
+            [ -f "$f" ] || continue
+            cp "$f" "$(echo "$f" | sed -e "s/-Setup-$V\.exe/-Setup.exe/" -e "s/^$N-$V-/$N-/")"
+          done
+          ls -lh
 
       - name: Publier la Release
         uses: softprops/action-gh-release@v2
