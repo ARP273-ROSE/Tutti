@@ -126,6 +126,8 @@ def main() -> int:
     ap.add_argument("--assembler", "--merge", metavar="OUTPUT.pdf",
                     help="merge without a window, in the given order / assembler sans fenêtre")
     ap.add_argument("--lang", choices=["fr", "en"], help="interface language / langue")
+    from tutti import __version__
+    ap.add_argument("--version", action="version", version=f"Tutti {__version__}")
     args = ap.parse_args()
     definir_langue(args.lang)
 

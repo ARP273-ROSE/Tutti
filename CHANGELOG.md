@@ -2,6 +2,12 @@
 
 ## English
 
+### 1.1.1
+
+- Linux: the launcher now follows symbolic links (a link from `~/.local/bin/tutti` works).
+- Linux: menu entry filed under Office instead of Science.
+- `--version` option on the command line.
+
 ### 1.1.0
 
 - Booklet layout is now a choice: *A5 booklet ready to print* (2 pages per A4 sheet) or
@@ -24,6 +30,12 @@ First version.
 - Windows, macOS and Linux packages with automatic updates and error reports.
 
 ## Francais
+
+### 1.1.1
+
+- Linux : le lanceur suit les liens symboliques (un lien depuis `~/.local/bin/tutti` fonctionne).
+- Linux : entrée de menu rangée dans Bureautique au lieu de Sciences.
+- Option `--version` en ligne de commande.
 
 ### 1.1.0
 

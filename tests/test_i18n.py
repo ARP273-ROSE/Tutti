@@ -44,3 +44,10 @@ def test_noms_et_erreurs_dans_la_langue():
     i18n.definir_langue("fr")
     assert info.erreur == "Protégé par un mot de passe"
     assert moteur.proposer_nom(chemins) == "Symphony 5 - complet.pdf"
+
+
+def test_option_version():
+    import subprocess
+    sortie = subprocess.run([sys.executable, str(Path(__file__).resolve().parent.parent / "run.py"),
+                             "--version"], capture_output=True, text=True, timeout=60)
+    assert sortie.returncode == 0 and sortie.stdout.startswith("Tutti ")

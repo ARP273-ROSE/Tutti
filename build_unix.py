@@ -153,16 +153,36 @@ def step_app():
     log(f'application copiee ({sum(1 for _ in app.rglob("*"))} entrees)')
 
 
+# Dossier réel du lanceur, liens symboliques suivis (~/.local/bin/tutti -> .../Tutti.sh,
+# et lien de lien) : `dirname "$0"` seul donnait le dossier du LIEN. Repris de Coupole 0.1.8.
+# Sans `readlink -f`, absent de macOS avant 12.3 : `readlink` simple, en boucle.
+SUIVRE_LIENS = (
+    'CIBLE="$0"\n'
+    'while [ -L "$CIBLE" ]; do\n'
+    '    LIEN=$(readlink "$CIBLE")\n'
+    '    case "$LIEN" in\n'
+    '        /*) CIBLE="$LIEN" ;;\n'
+    '        *) CIBLE="$(dirname "$CIBLE")/$LIEN" ;;\n'
+    '    esac\n'
+    'done\n')
+
+
+def texte_lanceur(relatif: str = '.') -> str:
+    """Le lanceur shell ; `relatif` : chemin de python/ et app/ depuis le dossier du lanceur."""
+    ici = '$(cd "$(dirname "$CIBLE")" && pwd)' if relatif == '.' else \
+        '$(cd "$(dirname "$CIBLE")/%s" && pwd)' % relatif
+    return ('#!/bin/sh\n'
+            '# Lanceur : tout est relatif au dossier du paquet, rien n\'est\n'
+            '# installe dans le systeme.\n'
+            + SUIVRE_LIENS +
+            f'ICI={ici}\n'
+            f'exec "$ICI/python/bin/python3" "$ICI/app/{POINT_ENTREE}" "$@"\n')
+
+
 def step_lanceur():
     """Un script shell, et sous macOS le bundle .app qui va autour."""
     sh = PKG / f'{NOM}.sh'
-    sh.write_text(
-        '#!/bin/sh\n'
-        '# Lanceur : tout est relatif au dossier du paquet, rien n\'est\n'
-        '# installe dans le systeme.\n'
-        'ICI=$(cd "$(dirname "$0")" && pwd)\n'
-        f'exec "$ICI/python/bin/python3" "$ICI/app/{POINT_ENTREE}" "$@"\n',
-        encoding='utf-8')
+    sh.write_text(texte_lanceur(), encoding='utf-8')
     sh.chmod(sh.stat().st_mode | stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH)
     log(f'lanceur : {sh.name}')
 
@@ -193,11 +213,7 @@ def step_lanceur():
             '  <key>LSMinimumSystemVersion</key><string>11.0</string>\n'
             '</dict></plist>\n', encoding='utf-8')
         lanceur = macos / NOM
-        lanceur.write_text(
-            '#!/bin/sh\n'
-            'ICI=$(cd "$(dirname "$0")/../Resources" && pwd)\n'
-            f'exec "$ICI/python/bin/python3" "$ICI/app/{POINT_ENTREE}" "$@"\n',
-            encoding='utf-8')
+        lanceur.write_text(texte_lanceur('../Resources'), encoding='utf-8')
         lanceur.chmod(0o755)
         for entree in ('python', 'app'):
             shutil.move(str(PKG / entree), str(resources / entree))
@@ -214,7 +230,7 @@ def step_lanceur():
             f'Exec=__ICI__/{NOM}.sh\n'
             '__ICONE__'
             'Terminal=false\n'
-            'Categories=Science;Astronomy;\n',
+            f"Categories={KIT.get('categories_desktop', 'Office;Utility;')}\n",
             encoding='utf-8')
 
 
