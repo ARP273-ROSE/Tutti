@@ -80,11 +80,23 @@ class ListePdf(QtWidgets.QListWidget):
         if self.count() == 0:
             p = QtGui.QPainter(self.viewport())
             p.setPen(self.palette().color(QtGui.QPalette.ColorRole.PlaceholderText))
+            texte = self._texte_vide or tr("liste.vide")
+            # Marges, retour à la ligne, et taille réduite jusqu'à ce que le
+            # texte tienne : une fenêtre étroite ou une mise à l'échelle 150 %
+            # ne doit jamais couper la phrase au bord de la liste.
+            zone = self.viewport().rect().adjusted(20, 12, -20, -12)
+            options = int(Qt.AlignmentFlag.AlignCenter | Qt.TextFlag.TextWordWrap)
             f = p.font()
-            f.setPointSizeF(f.pointSizeF() * 1.3)
+            taille = f.pointSizeF() * 1.3
+            while taille > 7:
+                f.setPointSizeF(taille)
+                boite = QtGui.QFontMetrics(f).boundingRect(zone, options, texte)
+                if boite.width() <= zone.width() and boite.height() <= zone.height():
+                    break
+                taille -= 0.5
             p.setFont(f)
-            p.drawText(self.viewport().rect(), Qt.AlignmentFlag.AlignCenter,
-                       self._texte_vide or tr("liste.vide"))
+            p.drawText(zone, options, texte)
+            p.end()
 
 
 class FenetrePrincipale(QtWidgets.QMainWindow):

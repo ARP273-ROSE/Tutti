@@ -2,6 +2,11 @@
 
 ## English
 
+### 1.1.5
+
+- The hint text in the empty list no longer runs past the edges: it wraps and shrinks to fit
+  (narrow window, 125–150 % display scaling).
+
 ### 1.1.4
 
 - macOS and Linux: the package now ships the file that tells the updater where to look for new
@@ -49,6 +54,11 @@ First version.
 - Windows, macOS and Linux packages with automatic updates and error reports.
 
 ## Francais
+
+### 1.1.5
+
+- Le texte d'accueil de la liste vide ne dépasse plus du cadre : il passe à la ligne et se réduit
+  pour tenir (fenêtre étroite, mise à l'échelle 125–150 %).
 
 ### 1.1.4
 

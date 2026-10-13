@@ -163,3 +163,20 @@ def test_decouper_une_image_multipage(app, tmp_path, monkeypatch):
     assert sorted(p.name for p in (tmp_path / "Scan - pages").iterdir()) == [
         "Scan - page 1.pdf", "Scan - page 2.pdf", "Scan - page 3.pdf"]
     w.close()
+
+
+def test_filigrane_tient_dans_une_liste_etroite(app):
+    """Le texte d'accueil ne doit jamais dépasser du cadre (fenêtre étroite,
+    mise à l'échelle Windows 150 %)."""
+    w = FenetrePrincipale()
+    w.resize(560, 600)
+    w.show()
+    app.processEvents()
+    image = w.liste.viewport().grab().toImage()
+    largeur, hauteur = image.width(), image.height()
+    fond = image.pixelColor(2, hauteur // 2)
+    # aucune encre sur les 8 premiers et 8 derniers pixels de chaque ligne
+    for y in range(0, hauteur, 3):
+        for x in list(range(0, 8)) + list(range(largeur - 8, largeur)):
+            assert image.pixelColor(x, y) == fond, (x, y)
+    w.close()
