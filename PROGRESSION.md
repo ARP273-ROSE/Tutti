@@ -28,9 +28,9 @@ Liens permanents : `https://github.com/ARP273-ROSE/Tutti/releases/latest/downloa
   d'installation reçu, aucun plantage ni gel signalé).
 
 ### Reste à vérifier
-- ⏳ **Conversion par Microsoft Office** : jamais exécutée (aucun Office sur les machines de test).
-  Une conversion refusée s'affiche en rouge dans la liste mais n'envoie pas de rapport :
-  il faut un essai réel avec un `.docx`, un `.xlsx` et un `.pptx`.
+- ✅ **Conversion Word par Microsoft Office** : fonctionne sur un poste réel (13/10/2026).
+- ⏳ Excel et PowerPoint par Office : pas encore essayés. Une conversion refusée s'affiche en
+  rouge dans la liste mais n'envoie pas de rapport.
 - ⏳ **Première mise à jour automatique** 1.0.0 → 1.1.0 sur un poste installé.
 - Paquets macOS jamais ouverts sur un vrai Mac.
 
