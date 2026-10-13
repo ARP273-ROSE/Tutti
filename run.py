@@ -135,6 +135,13 @@ def main() -> int:
         return _ligne_de_commande(args.assembler, args.fichiers)
 
     _demarrer_rapports()
+    # Linux : sans thème de plateforme, le Qt embarqué ouvre son propre
+    # sélecteur de fichiers, réduit. Le portail XDG passe la main au vrai
+    # sélecteur du bureau (Dolphin/KDE, Nautilus/GNOME…). Sans portail, Qt
+    # revient de lui-même au sélecteur intégré. Un choix de l'utilisateur
+    # (variable déjà posée) est respecté. Windows et macOS : déjà natifs.
+    if sys.platform.startswith("linux") and not os.environ.get("QT_QPA_PLATFORMTHEME"):
+        os.environ["QT_QPA_PLATFORMTHEME"] = "xdgdesktopportal"
     from PyQt6 import QtCore, QtGui, QtWidgets
     from tutti.fenetre import FenetrePrincipale
 

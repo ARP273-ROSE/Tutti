@@ -2,7 +2,7 @@
 
 ## État au 12/10/2026
 
-**Version publiée : 1.1.1** — Windows, macOS (Apple Silicon et Intel), Linux (x86_64 et ARM64).
+**Version publiée : 1.1.2** — Windows, macOS (Apple Silicon et Intel), Linux (x86_64 et ARM64).
 Liens permanents : `https://github.com/ARP273-ROSE/Tutti/releases/latest/download/Tutti-Setup.exe`
 (et `Tutti-macos-arm64.dmg`, `Tutti-macos-x86_64.dmg`, `Tutti-linux-x86_64.tar.gz`, `Tutti-linux-arm64.tar.gz`).
 

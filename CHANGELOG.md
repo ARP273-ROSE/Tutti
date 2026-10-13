@@ -2,6 +2,11 @@
 
 ## English
 
+### 1.1.2
+
+- Linux: file and folder dialogs are now those of the desktop (KDE, GNOME…) through the XDG portal,
+  instead of Qt's reduced built-in dialog.
+
 ### 1.1.1
 
 - Linux: the launcher now follows symbolic links (a link from `~/.local/bin/tutti` works).
@@ -30,6 +35,11 @@ First version.
 - Windows, macOS and Linux packages with automatic updates and error reports.
 
 ## Francais
+
+### 1.1.2
+
+- Linux : les fenêtres de choix de fichiers et de dossiers sont celles du bureau (KDE, GNOME…), via
+  le portail XDG, au lieu de la fenêtre réduite de Qt.
 
 ### 1.1.1
 
