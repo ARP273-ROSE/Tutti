@@ -51,3 +51,16 @@ def test_option_version():
     sortie = subprocess.run([sys.executable, str(Path(__file__).resolve().parent.parent / "run.py"),
                              "--version"], capture_output=True, text=True, timeout=60)
     assert sortie.returncode == 0 and sortie.stdout.startswith("Tutti ")
+
+
+def test_paquet_reconnu_sur_les_trois_systemes(tmp_path, monkeypatch):
+    """Le paquet installé se reconnaît à son Python embarqué, quel que soit le système."""
+    import updater
+    for chemin in ("python/python.exe", "python/bin/python3"):
+        racine = tmp_path / chemin.replace("/", "_")
+        (racine / "app").mkdir(parents=True)
+        exe = racine / chemin
+        exe.parent.mkdir(parents=True, exist_ok=True)
+        exe.write_text("")
+        monkeypatch.setattr(updater, "app_dir", lambda r=racine: r / "app")
+        assert updater.is_packaged(), chemin

@@ -2,6 +2,14 @@
 
 ## English
 
+### 1.1.3
+
+- macOS and Linux: automatic updates now work. The installed package was not recognised (only the
+  Windows interpreter was looked for), so no update was ever searched for at startup.
+  **Versions up to 1.1.2 on macOS/Linux must be reinstalled once by hand**; later updates are automatic.
+- macOS and Linux: settings are kept outside the program folder (`~/Library/Application Support/Tutti`,
+  `~/.local/state/Tutti`) and survive updates.
+
 ### 1.1.2
 
 - Linux: file and folder dialogs are now those of the desktop (KDE, GNOME…) through the XDG portal,
@@ -35,6 +43,15 @@ First version.
 - Windows, macOS and Linux packages with automatic updates and error reports.
 
 ## Francais
+
+### 1.1.3
+
+- macOS et Linux : la mise à jour automatique fonctionne. Le paquet installé n'était pas reconnu (seul
+  l'interpréteur Windows était cherché), si bien qu'aucune mise à jour n'était jamais recherchée.
+  **Les versions jusqu'à 1.1.2 sous macOS/Linux doivent être réinstallées une fois à la main** ;
+  les suivantes se mettront à jour seules.
+- macOS et Linux : les réglages sont rangés hors du dossier du programme
+  (`~/Library/Application Support/Tutti`, `~/.local/state/Tutti`) et survivent aux mises à jour.
 
 ### 1.1.2
 

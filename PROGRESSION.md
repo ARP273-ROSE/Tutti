@@ -2,7 +2,7 @@
 
 ## État au 12/10/2026
 
-**Version publiée : 1.1.2** — Windows, macOS (Apple Silicon et Intel), Linux (x86_64 et ARM64).
+**Version publiée : 1.1.3** — Windows, macOS (Apple Silicon et Intel), Linux (x86_64 et ARM64).
 Liens permanents : `https://github.com/ARP273-ROSE/Tutti/releases/latest/download/Tutti-Setup.exe`
 (et `Tutti-macos-arm64.dmg`, `Tutti-macos-x86_64.dmg`, `Tutti-linux-x86_64.tar.gz`, `Tutti-linux-arm64.tar.gz`).
 
@@ -40,6 +40,9 @@ Liens permanents : `https://github.com/ARP273-ROSE/Tutti/releases/latest/downloa
   `sys_platform != "darwin" or platform_machine != "x86_64"`.
 - `tempfile.mkstemp` crée les fichiers en 600 : rendre au PDF final les droits du umask.
 - `pages.extend()` perd liens internes et formulaires : `Pdf.add_pages_from()` (pikepdf ≥ 10).
+- 🔴 `updater.is_packaged()` ne cherchait que `python/python.exe` : sous macOS et Linux, le paquet se
+  croyait lancé depuis les sources et ne cherchait jamais de mise à jour (corrigé en 1.1.3 ; les
+  installations ≤ 1.1.2 hors Windows se réinstallent une fois à la main).
 - Le détail d'erreur de qpdf contient le chemin complet du fichier : ne jamais l'afficher ni
   l'envoyer dans un rapport.
 - Lancer un installeur ou une opération système depuis un processus confiné (application

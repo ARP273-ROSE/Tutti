@@ -21,16 +21,37 @@ _fichier_faulthandler = None
 
 
 def _dossier_donnees() -> Path:
-    """Données hors du dossier d'installation : elles survivent aux mises à jour."""
+    """Données hors du dossier d'installation : elles survivent aux mises à jour.
+
+    Windows : %LOCALAPPDATA%\\Tutti ; macOS : ~/Library/Application Support/Tutti ;
+    Linux : $XDG_STATE_HOME/Tutti (~/.local/state/Tutti). Depuis les sources :
+    le dossier du dépôt.
+    """
     ici = Path(__file__).resolve().parent
-    if (ici.parent / "python" / "python.exe").exists():
-        base = Path(os.environ.get("LOCALAPPDATA", Path.home())) / NOM
-    else:
+    python = ici.parent / "python"
+    installe = (python / "python.exe").exists() or (python / "bin" / "python3").exists()
+    if not installe:
         base = ici
+    elif sys.platform == "win32":
+        base = Path(os.environ.get("LOCALAPPDATA", Path.home())) / NOM
+    elif sys.platform == "darwin":
+        base = Path.home() / "Library" / "Application Support" / NOM
+    else:
+        base = Path(os.environ.get("XDG_STATE_HOME") or Path.home() / ".local" / "state") / NOM
     try:
         base.mkdir(parents=True, exist_ok=True)
     except OSError:
         base = Path.home()
+    # Versions ≤ 1.1.2 sous macOS et Linux : réglages des rapports écrits dans
+    # app/. On les reprend une fois, pour ne pas reposer la question d'accord.
+    if installe and base != ici:
+        for nom in ("reglages_rapports.json",):
+            ancien, neuf = ici / nom, base / nom
+            if ancien.exists() and not neuf.exists():
+                try:
+                    neuf.write_bytes(ancien.read_bytes())
+                except OSError:
+                    pass
     return base
 
 

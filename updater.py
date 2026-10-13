@@ -69,8 +69,15 @@ def app_dir():
 
 
 def is_packaged():
-    """Vrai si l'on tourne depuis le paquet autonome (python embarque a cote)."""
-    return (app_dir().parent / 'python' / 'python.exe').exists()
+    """Vrai si l'on tourne depuis le paquet autonome (python embarque a cote).
+
+    Windows : python/python.exe ; macOS et Linux : python/bin/python3. Ne
+    tester que python.exe faisait croire aux paquets macOS et Linux qu'ils
+    tournaient depuis les sources : aucune mise a jour n'y etait jamais
+    recherchee au demarrage.
+    """
+    python = app_dir().parent / 'python'
+    return (python / 'python.exe').exists() or (python / 'bin' / 'python3').exists()
 
 
 # Seuls ces hotes peuvent livrer du code. L'adresse vient deja d'une reponse
