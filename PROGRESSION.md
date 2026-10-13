@@ -2,7 +2,7 @@
 
 ## État au 12/10/2026
 
-**Version publiée : 1.1.3** — Windows, macOS (Apple Silicon et Intel), Linux (x86_64 et ARM64).
+**Version publiée : 1.1.4** — Windows, macOS (Apple Silicon et Intel), Linux (x86_64 et ARM64).
 Liens permanents : `https://github.com/ARP273-ROSE/Tutti/releases/latest/download/Tutti-Setup.exe`
 (et `Tutti-macos-arm64.dmg`, `Tutti-macos-x86_64.dmg`, `Tutti-linux-x86_64.tar.gz`, `Tutti-linux-arm64.tar.gz`).
 
@@ -31,7 +31,7 @@ Liens permanents : `https://github.com/ARP273-ROSE/Tutti/releases/latest/downloa
 - ✅ **Conversion Word par Microsoft Office** : fonctionne sur un poste réel (13/10/2026).
 - ⏳ Excel et PowerPoint par Office : pas encore essayés. Une conversion refusée s'affiche en
   rouge dans la liste mais n'envoie pas de rapport.
-- ⏳ **Première mise à jour automatique** 1.0.0 → 1.1.0 sur un poste installé.
+- ⏳ **Première mise à jour automatique** sur un poste Windows installé (Linux : vérifiée en 1.1.4).
 - Paquets macOS jamais ouverts sur un vrai Mac.
 
 ### Pièges déjà payés
@@ -43,6 +43,9 @@ Liens permanents : `https://github.com/ARP273-ROSE/Tutti/releases/latest/downloa
 - 🔴 `updater.is_packaged()` ne cherchait que `python/python.exe` : sous macOS et Linux, le paquet se
   croyait lancé depuis les sources et ne cherchait jamais de mise à jour (corrigé en 1.1.3 ; les
   installations ≤ 1.1.2 hors Windows se réinstallent une fois à la main).
+- 🔴 `build_unix.py` n'embarquait pas `kit.json` : dépôt de distribution vide, aucune mise à jour
+  trouvée sous macOS/Linux même une fois le paquet reconnu (corrigé en 1.1.4 ; la construction
+  vérifie désormais `updater.REPO` et `is_packaged()`). Mise à jour Linux testée de bout en bout.
 - Le détail d'erreur de qpdf contient le chemin complet du fichier : ne jamais l'afficher ni
   l'envoyer dans un rapport.
 - Lancer un installeur ou une opération système depuis un processus confiné (application

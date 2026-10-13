@@ -2,6 +2,12 @@
 
 ## English
 
+### 1.1.4
+
+- macOS and Linux: the package now ships the file that tells the updater where to look for new
+  versions. 1.1.3 recognised the installed package but still found no update. The build now fails if
+  the update check would not work. Reinstall once by hand from 1.1.3 or earlier.
+
 ### 1.1.3
 
 - macOS and Linux: automatic updates now work. The installed package was not recognised (only the
@@ -43,6 +49,13 @@ First version.
 - Windows, macOS and Linux packages with automatic updates and error reports.
 
 ## Francais
+
+### 1.1.4
+
+- macOS et Linux : le paquet contient désormais le fichier qui indique au module de mise à jour où
+  chercher les nouvelles versions. La 1.1.3 reconnaissait le paquet installé mais ne trouvait toujours
+  aucune mise à jour. La construction échoue maintenant si la mise à jour ne pourrait pas fonctionner.
+  Réinstaller une fois à la main depuis la 1.1.3 ou avant.
 
 ### 1.1.3
 

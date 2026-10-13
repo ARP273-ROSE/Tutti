@@ -150,6 +150,10 @@ def step_app():
                             ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
         else:
             shutil.copy2(src, app / src.name)
+    # kit.json dit a updater.py ou chercher les versions : sans lui, le depot
+    # de distribution est vide et aucune mise a jour n'est jamais trouvee.
+    # build_package.py (Windows) le copiait deja ; ici, il manquait.
+    shutil.copy2(ROOT / 'kit.json', app / 'kit.json')
     log(f'application copiee ({sum(1 for _ in app.rglob("*"))} entrees)')
 
 
@@ -272,6 +276,15 @@ def step_verifier(version):
     if r.returncode != 0:
         raise RuntimeError('Le paquet ne s\'importe pas :\n' + r.stderr[-2000:])
     log('verification d\'import : ok')
+    # La mise a jour doit savoir ou chercher, et reconnaitre le paquet.
+    controle = ('import sys; sys.path.insert(0, "app"); import updater; '
+                'assert updater.REPO, "depot de distribution vide"; '
+                'assert updater.is_packaged(), "paquet non reconnu"; print("ok")')
+    r = subprocess.run([str(exe), '-B', '-c', controle], cwd=base, capture_output=True, text=True,
+                       env={**os.environ, 'PYTHONDONTWRITEBYTECODE': '1'})
+    if r.returncode != 0:
+        raise RuntimeError('Mise a jour inoperante dans le paquet :\n' + r.stderr[-2000:])
+    log('verification de la mise a jour : ok')
 
 
 def step_archive(version):
