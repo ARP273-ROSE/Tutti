@@ -58,6 +58,7 @@
   "categories_linux": "Office;Utility;",
   "icone_icns": "logo.icns",
   "tests_ci": [
+    "tests/test_confidentialite.py",
     "tests/test_moteur.py",
     "tests/test_conversion.py",
     "tests/test_i18n.py",
