@@ -170,7 +170,7 @@ jobs:
             libdbus-1-3 libfontconfig1 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 \
             libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-cursor0 \
             libxcb-xkb1 libpulse0 libasound2t64 \
-            libnss3 libxcomposite1 libxdamage1 libxrandr2 libxtst6 libxkbfile1 libxshmfence1 libgbm1
+            libnss3 libxcomposite1 libxdamage1 libxrandr2 libxtst6 libxkbfile1 libxshmfence1 libgbm1 libminizip1
           pip install -q pytest -r "${{ steps.kit.outputs.requirements }}"
       - name: Essais
         if: steps.kit.outputs.cibles != ''
@@ -315,7 +315,11 @@ jobs:
           "$PKG/python/python.exe" -c "
           import sys, json, pathlib
           sys.path.insert(0, r'$PKG/app')
+          from PyQt6.QtCore import QCoreApplication, Qt
           from PyQt6.QtWidgets import QApplication
+          # exige par QtWebEngine AVANT la creation de l'application (sans
+          # effet pour les autres) : sinon son import echoue ici
+          QCoreApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
           app = QApplication(sys.argv)
           import reporting, updater
           kit = json.loads(pathlib.Path(r'$PKG/app/kit.json').read_text(encoding='utf-8'))
@@ -507,7 +511,7 @@ jobs:
             libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-cursor0 \
             libxcb-xkb1 libpulse0 libasound2t64 binutils \
             libnss3 libxcomposite1 libxdamage1 libxrandr2 libxtst6 libxkbfile1 \
-            libxshmfence1 libgbm1 || \
+            libxshmfence1 libgbm1 libminizip1 || \
           sudo apt-get install -y -qq \
             libegl1 libgl1 libxkbcommon-x11-0 libdbus-1-3 libfontconfig1 \
             libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 \
