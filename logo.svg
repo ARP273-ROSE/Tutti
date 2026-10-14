@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="fond" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7A1F2B"/>
+      <stop offset="100%" stop-color="#5E1620"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="url(#fond)"/>
+  <rect x="40" y="40" width="432" height="432" rx="76" fill="none" stroke="#C9A227" stroke-width="5"/>
+  <g transform="rotate(-8 256 270)"><rect x="96" y="108" width="270" height="330" rx="16" fill="#E9E2D2" stroke="#CFC5B2" stroke-width="3"/>
+    <line x1="122" y1="170" x2="232" y2="170" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="122" y1="179" x2="232" y2="179" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="122" y1="188" x2="232" y2="188" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="122" y1="197" x2="232" y2="197" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="122" y1="206" x2="232" y2="206" stroke="#1E1A17" stroke-width="2.6"/></g>
+  <g transform="rotate(7 256 270)"><rect x="150" y="104" width="270" height="330" rx="16" fill="#E9E2D2" stroke="#CFC5B2" stroke-width="3"/>
+    <line x1="300" y1="170" x2="400" y2="170" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="300" y1="179" x2="400" y2="179" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="300" y1="188" x2="400" y2="188" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="300" y1="197" x2="400" y2="197" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="300" y1="206" x2="400" y2="206" stroke="#1E1A17" stroke-width="2.6"/></g>
+  <rect x="126" y="86" width="260" height="350" rx="16" fill="#FBF8F1" stroke="#D9CFBE" stroke-width="3"/>
+  <line x1="150" y1="168" x2="362" y2="168" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="150" y1="177" x2="362" y2="177" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="150" y1="186" x2="362" y2="186" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="150" y1="195" x2="362" y2="195" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="150" y1="204" x2="362" y2="204" stroke="#1E1A17" stroke-width="2.6"/>
+  <ellipse cx="214" cy="196" rx="11" ry="8" transform="rotate(-20 214 196)" fill="#1E1A17"/>
+<rect x="222" y="138" width="4" height="58" fill="#1E1A17"/>
+<ellipse cx="266" cy="184" rx="11" ry="8" transform="rotate(-20 266 184)" fill="#1E1A17"/>
+<rect x="274" y="126" width="4" height="58" fill="#1E1A17"/>
+<polygon points="222,138 278,126 278,138 222,150" fill="#1E1A17"/>
+  <line x1="150" y1="282" x2="362" y2="282" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="150" y1="291" x2="362" y2="291" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="150" y1="300" x2="362" y2="300" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="150" y1="309" x2="362" y2="309" stroke="#1E1A17" stroke-width="2.6"/>
+<line x1="150" y1="318" x2="362" y2="318" stroke="#1E1A17" stroke-width="2.6"/>
+  <ellipse cx="214" cy="310" rx="11" ry="8" transform="rotate(-20 214 310)" fill="#1E1A17"/>
+<rect x="222" y="252" width="4" height="58" fill="#1E1A17"/>
+<ellipse cx="266" cy="298" rx="11" ry="8" transform="rotate(-20 266 298)" fill="#1E1A17"/>
+<rect x="274" y="240" width="4" height="58" fill="#1E1A17"/>
+<polygon points="222,252 278,240 278,252 222,264" fill="#1E1A17"/>
+  <rect x="112" y="372" width="288" height="30" rx="10" fill="#C9A227" stroke="#8C6E12" stroke-width="2"/>
+</svg>

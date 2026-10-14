@@ -2,6 +2,21 @@
 
 ## English
 
+### 1.2.0
+
+- Linux: opening and saving files now always use Qt's complete file dialog
+  (sidebar with home, Documents, Downloads and mounted drives, folder tree,
+  new folder), in the application's look; the desktop portal's dialog was
+  sometimes reduced to a plain list. Windows and macOS keep their own dialog.
+- One logo, drawn once as a vector image (`logo.svg`) and used for the icon,
+  the About box (which now shows it) and the manual.
+- The look stays the same everywhere, including greyed-out items, whatever
+  the system theme.
+- Installer packages built by the common kit: the Linux and macOS launchers
+  follow symbolic links, a `--check` start test runs on every system before
+  publishing, and a native crash of the previous session is no longer lost
+  before it is reported.
+
 ### 1.1.5
 
 - The hint text in the empty list no longer runs past the edges: it wraps and shrinks to fit
@@ -54,6 +69,22 @@ First version.
 - Windows, macOS and Linux packages with automatic updates and error reports.
 
 ## Francais
+
+### 1.2.0
+
+- Linux : ouvrir et enregistrer passent toujours par la boîte de fichiers
+  complète de Qt (barre latérale avec dossier personnel, Documents,
+  Téléchargements et disques branchés, arborescence, nouveau dossier), aux
+  couleurs de l'application ; celle du portail du bureau se réduisait parfois
+  à une simple liste. Windows et macOS gardent leur boîte habituelle.
+- Un seul logo, dessiné une fois en image vectorielle (`logo.svg`), pour
+  l'icône, la fenêtre « À propos » (qui l'affiche désormais) et le manuel.
+- L'apparence reste la même partout, éléments grisés compris, quel que soit
+  le thème du système.
+- Paquets construits par le kit commun : les lanceurs Linux et macOS suivent
+  les liens symboliques, un essai de démarrage `--check` tourne sur chaque
+  système avant publication, et le crash natif d'une session précédente n'est
+  plus perdu avant d'être signalé.
 
 ### 1.1.5
 

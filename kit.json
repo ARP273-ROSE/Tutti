@@ -10,7 +10,8 @@
   "modules": [
     "run.py",
     "reporting.py",
-    "updater.py"
+    "updater.py",
+    "interface_kit.py"
   ],
   "paquets": [
     "tutti"
@@ -19,21 +20,49 @@
     "VERSION",
     "README.md",
     "CHANGELOG.md",
+    "logo.svg",
     "logo.ico",
     "logo.png",
+    "logo_16.png",
+    "logo_32.png",
     "logo_64.png",
+    "logo_128.png",
+    "logo_256.png",
+    "logo_512.png",
+    "logo_1024.png",
     "docs"
   ],
   "requirements": "requirements.txt",
   "pip": [],
   "binaires": [],
-  "fichiers_proteges": [],
+  "fichiers_proteges": [
+    "_rapports",
+    "reglages_rapports.json",
+    "_crash_natif.log",
+    "tutti-erreur.log"
+  ],
   "verification_import": [
     "tutti",
     "tutti.moteur",
     "tutti.i18n",
     "tutti.style",
-    "pikepdf"
+    "pikepdf",
+    "interface_kit"
   ],
-  "categories_desktop": "Office;Utility;"
+  "icone_png": "logo_256.png",
+  "icone_grande": "logo_512.png",
+  "nom_affiche_fr": "Tutti",
+  "nom_affiche_en": "Tutti",
+  "description_fr": "Assembler, convertir et découper des PDF",
+  "description_en": "Merge, convert and split PDF files",
+  "categories_linux": "Office;Utility;",
+  "icone_icns": "logo.icns",
+  "tests_ci": [
+    "tests/test_moteur.py",
+    "tests/test_conversion.py",
+    "tests/test_i18n.py",
+    "tests/test_textes_en_dur.py",
+    "tests/test_kit.py",
+    "tests/test_fenetre.py"
+  ]
 }

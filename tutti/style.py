@@ -57,7 +57,9 @@ def _palette() -> QtGui.QPalette:
     R = QtGui.QPalette.ColorRole
     G = QtGui.QPalette.ColorGroup
     c = QtGui.QColor
-    for groupe in (G.Active, G.Inactive):
+    # les TROIS groupes (actif, inactif, désactivé) : un rôle laissé vide dans
+    # le groupe désactivé prendrait la couleur du système
+    for groupe in (G.Active, G.Inactive, G.Disabled):
         p.setColor(groupe, R.Window, c(PAPIER))
         p.setColor(groupe, R.WindowText, c(ENCRE))
         p.setColor(groupe, R.Base, c(CARTE))

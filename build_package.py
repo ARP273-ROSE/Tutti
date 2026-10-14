@@ -381,7 +381,13 @@ def main():
         ('Dependances', lambda: step_deps(globals()['_exe'])),
         ('Application', step_app),
         ('Binaires', (lambda: log('ignore')) if args.skip_binaires else step_binaires),
-        ('Elagage', (lambda: log('ignore')) if args.no_prune else step_prune),
+        # kit.json « qt_elaguer » : false pour une application qui se sert de
+        # modules Qt que l'elagage retire (QtWebEngine et ses dependances
+        # Qml/Quick/WebChannel/Positioning : une liseuse EPUB, par exemple).
+        # Sans cela le paquet Windows perdait la fonction en silence, alors
+        # que les paquets macOS et Linux, jamais elagues, la gardaient.
+        ('Elagage', (lambda: log('ignore'))
+         if args.no_prune or KIT.get('qt_elaguer', True) is False else step_prune),
         ('Lanceurs', step_launcher),
         ('Pre-compilation', step_precompile),
     ]

@@ -58,19 +58,21 @@ def _dossier_donnees() -> Path:
 def _demarrer_rapports() -> None:
     dossier = _dossier_donnees()
     trace_native = dossier / "_crash_natif.log"
-    try:
-        import faulthandler
-        global _fichier_faulthandler
-        _fichier_faulthandler = open(trace_native, "w", encoding="utf-8")
-        faulthandler.enable(file=_fichier_faulthandler, all_threads=True)
-    except Exception:
-        pass
+    # La trace de la session précédente est relevée AVANT de rouvrir le
+    # fichier : l'ouverture en écriture le vide.
     try:
         import reporting
         from tutti import __version__
         reporting.init(dossier, application="tutti", version=__version__)
         reporting.relever_crash_natif(trace_native)
         reporting.reprendre_file_en_fond()
+    except Exception:
+        pass
+    try:
+        import faulthandler
+        global _fichier_faulthandler
+        _fichier_faulthandler = open(trace_native, "w", encoding="utf-8")
+        faulthandler.enable(file=_fichier_faulthandler, all_threads=True)
     except Exception:
         pass
 
@@ -140,7 +142,30 @@ def _ligne_de_commande(sortie: str, sources: list[str]) -> int:
     return 0
 
 
+def _verifier() -> int:
+    """--check : l'application et ses dépendances se chargent (lancé par la
+    construction des paquets avec l'interpréteur embarqué ; aucune fenêtre)."""
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    try:
+        from PyQt6 import QtWidgets
+        app = QtWidgets.QApplication.instance() or QtWidgets.QApplication(sys.argv[:1])
+        import interface_kit  # noqa: F401
+        import pikepdf  # noqa: F401
+        import reporting  # noqa: F401
+        import updater  # noqa: F401
+        from tutti import fenetre, moteur, style  # noqa: F401
+        style.appliquer(app)
+        del app
+    except Exception as exc:
+        print(f"Tutti : ECHEC / FAILED -- {type(exc).__name__}: {exc}")
+        return 1
+    print("Tutti : OK")
+    return 0
+
+
 def main() -> int:
+    if "--check" in sys.argv[1:]:
+        return _verifier()
     from tutti.i18n import definir_langue, tr
     ap = argparse.ArgumentParser(description=tr("cli.description"))
     ap.add_argument("fichiers", nargs="*", help="PDF files or folders / PDF ou dossiers")
@@ -156,13 +181,6 @@ def main() -> int:
         return _ligne_de_commande(args.assembler, args.fichiers)
 
     _demarrer_rapports()
-    # Linux : sans thème de plateforme, le Qt embarqué ouvre son propre
-    # sélecteur de fichiers, réduit. Le portail XDG passe la main au vrai
-    # sélecteur du bureau (Dolphin/KDE, Nautilus/GNOME…). Sans portail, Qt
-    # revient de lui-même au sélecteur intégré. Un choix de l'utilisateur
-    # (variable déjà posée) est respecté. Windows et macOS : déjà natifs.
-    if sys.platform.startswith("linux") and not os.environ.get("QT_QPA_PLATFORMTHEME"):
-        os.environ["QT_QPA_PLATFORMTHEME"] = "xdgdesktopportal"
     from PyQt6 import QtCore, QtGui, QtWidgets
     from tutti.fenetre import FenetrePrincipale
 
@@ -174,6 +192,16 @@ def main() -> int:
         definir_langue(choix if choix in ("fr", "en") else None)
     from tutti import style
     style.appliquer(app)            # apparence figée, indépendante du thème Windows
+    # Linux : la boîte « native » passe par le portail XDG et se réduit souvent
+    # à une liste ; on impose la boîte COMPLÈTE de Qt (barre latérale avec
+    # dossier personnel, Documents, Téléchargements, supports montés ;
+    # arborescence, création de dossier), au style de l'application (kit
+    # commun, interface_kit). Windows et macOS gardent leur boîte native.
+    try:
+        import interface_kit
+        interface_kit.installer_dialogues_fichiers()
+    except Exception:
+        pass
     # Verrou nommé lu par l'installeur Inno (AppMutex = <nom_fichier>EnCours).
     if sys.platform == "win32":
         try:

@@ -19,6 +19,10 @@ Python « embeddable » de Windows. Dependre du Python du systeme serait plus
 simple et plus fragile : sur macOS il peut ne pas etre installe, et sur Linux
 sa version varie d'une distribution a l'autre.
 
+Sous Linux, le dossier livre contient aussi `installer.sh` : il installe
+dans le profil de l'utilisateur (~/.local/share), sans sudo, et pose l'entree
+de menu. Sous macOS, le bundle `.app` se glisse dans Applications.
+
 Usage :
     python3 build_unix.py [--version X.Y.Z]
 """
@@ -72,6 +76,27 @@ def plateforme():
     return 'macos' if sys.platform == 'darwin' else 'linux'
 
 
+def architecture():
+    """'arm64' ou 'x86_64' : le suffixe des paquets publies. Le Python
+    embarque est propre a une architecture, le mauvais ne demarre pas."""
+    machine = platform.machine().lower()
+    return 'arm64' if machine in ('arm64', 'aarch64') else 'x86_64'
+
+
+#: icone du programme (PNG carre), relative a la racine du depot. Facultatif :
+#: sans elle, le bundle et l'entree de menu fonctionnent, sans icone.
+ICONE_PNG = KIT.get('icone_png') or ''
+ICONE_GRANDE = KIT.get('icone_grande') or ICONE_PNG
+
+#: entree de menu Linux : noms et description dans les deux langues
+#: (une cle vide de l'amorce vaut une cle absente)
+NOM_FR = KIT.get('nom_affiche_fr') or NOM_AFFICHE
+NOM_EN = KIT.get('nom_affiche_en') or NOM_AFFICHE
+DESCRIPTION_FR = KIT.get('description_fr') or ''
+DESCRIPTION_EN = KIT.get('description_en') or DESCRIPTION_FR
+CATEGORIES = KIT.get('categories_linux') or 'Utility;'
+
+
 def fetch(url, dest):
     if dest.exists() and dest.stat().st_size > 0:
         log(f'deja en cache : {dest.name}')
@@ -104,7 +129,12 @@ def step_python():
         for membre in t.getmembers():
             if os.path.isabs(membre.name) or '..' in Path(membre.name).parts:
                 raise RuntimeError(f'Archive suspecte : {membre.name}')
-        t.extractall(tmp)
+        # filtre « data » quand il existe (3.12+) : refuse liens et chemins
+        # hors du dossier, et fait taire l'avertissement de Python 3.14
+        if hasattr(tarfile, 'data_filter'):
+            t.extractall(tmp, filter='data')
+        else:
+            t.extractall(tmp)
     shutil.move(str(tmp / 'python'), str(cible_dir))
     shutil.rmtree(tmp, ignore_errors=True)
 
@@ -150,6 +180,19 @@ def step_app():
                             ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
         else:
             shutil.copy2(src, app / src.name)
+    # Copies selectives (kit.json « copies »), comme build_package.py sous
+    # Windows : seuls les fichiers retenus par les motifs, a la meme place
+    # relative. Sans elles, ce que l'application ouvre depuis un sous-dossier
+    # (le manuel dans docs/, par exemple) manquait aux paquets macOS et Linux.
+    for regle in KIT.get('copies', []):
+        source = ROOT / regle['de']
+        cible = app / regle.get('vers', regle['de'])
+        for motif in regle.get('motifs', ['**/*']):
+            for fichier in source.glob(motif):
+                if fichier.is_file():
+                    destination = cible / fichier.relative_to(source)
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(fichier, destination)
     # kit.json dit a updater.py ou chercher les versions : sans lui, le depot
     # de distribution est vide et aucune mise a jour n'est jamais trouvee.
     # build_package.py (Windows) le copiait deja ; ici, il manquait.
@@ -157,9 +200,10 @@ def step_app():
     log(f'application copiee ({sum(1 for _ in app.rglob("*"))} entrees)')
 
 
-# Dossier réel du lanceur, liens symboliques suivis (~/.local/bin/tutti -> .../Tutti.sh,
-# et lien de lien) : `dirname "$0"` seul donnait le dossier du LIEN. Repris de Coupole 0.1.8.
-# Sans `readlink -f`, absent de macOS avant 12.3 : `readlink` simple, en boucle.
+# Dossier reel du lanceur, liens symboliques suivis (~/.local/bin/app ->
+# .../App.sh, et lien de lien) : `dirname "$0"` seul donnait le dossier du
+# LIEN, et l'application ne trouvait plus python/ ni app/. Sans `readlink -f`,
+# absent de macOS avant 12.3 : `readlink` simple, en boucle (Coupole, Tutti).
 SUIVRE_LIENS = (
     'CIBLE="$0"\n'
     'while [ -L "$CIBLE" ]; do\n'
@@ -172,9 +216,9 @@ SUIVRE_LIENS = (
 
 
 def texte_lanceur(relatif: str = '.') -> str:
-    """Le lanceur shell ; `relatif` : chemin de python/ et app/ depuis le dossier du lanceur."""
-    ici = '$(cd "$(dirname "$CIBLE")" && pwd)' if relatif == '.' else \
-        '$(cd "$(dirname "$CIBLE")/%s" && pwd)' % relatif
+    """Le lanceur shell ; `relatif` : python/ et app/ vus du dossier du lanceur."""
+    ici = ('$(cd "$(dirname "$CIBLE")" && pwd)' if relatif == '.'
+           else '$(cd "$(dirname "$CIBLE")/%s" && pwd)' % relatif)
     return ('#!/bin/sh\n'
             '# Lanceur : tout est relatif au dossier du paquet, rien n\'est\n'
             '# installe dans le systeme.\n'
@@ -201,18 +245,24 @@ def step_lanceur():
         resources = bundle / 'Contents' / 'Resources'
         macos.mkdir(parents=True)
         resources.mkdir(parents=True)
+        icone = _icone_macos(resources)
         (bundle / 'Contents' / 'Info.plist').write_text(
             '<?xml version="1.0" encoding="UTF-8"?>\n'
             '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" '
             '"http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n'
             '<plist version="1.0"><dict>\n'
-            f'  <key>CFBundleName</key><string>{NOM_AFFICHE}</string>\n'
+            f'  <key>CFBundleName</key><string>{NOM}</string>\n'
             f'  <key>CFBundleDisplayName</key><string>{NOM_AFFICHE}</string>\n'
-            f'  <key>CFBundleIdentifier</key><string>info.{NOM_TECHNIQUE}.app</string>\n'
+            f'  <key>CFBundleIdentifier</key><string>io.github.arp273-rose.{NOM_TECHNIQUE}</string>\n'
             f'  <key>CFBundleExecutable</key><string>{NOM}</string>\n'
             f'  <key>CFBundleVersion</key><string>{_version_courante()}</string>\n'
             f'  <key>CFBundleShortVersionString</key><string>{_version_courante()}</string>\n'
+            + (f'  <key>CFBundleIconFile</key><string>{icone}</string>\n'
+               if icone else '') +
             '  <key>CFBundlePackageType</key><string>APPL</string>\n'
+            '  <key>CFBundleDevelopmentRegion</key><string>en</string>\n'
+            '  <key>CFBundleLocalizations</key><array><string>en</string>'
+            '<string>fr</string></array>\n'
             '  <key>NSHighResolutionCapable</key><true/>\n'
             '  <key>LSMinimumSystemVersion</key><string>11.0</string>\n'
             '</dict></plist>\n', encoding='utf-8')
@@ -225,17 +275,96 @@ def step_lanceur():
         log(f'bundle : {bundle.name}')
 
     if plateforme() == 'linux':
-        # Fichier .desktop, pose par l'installeur dans ~/.local/share/applications
+        # Modele d'entree de menu, rempli par installer.sh avec le dossier
+        # d'installation reel (une entree .desktop exige des chemins absolus)
         (PKG / f'{NOM_TECHNIQUE}.desktop').write_text(
             '[Desktop Entry]\n'
             'Type=Application\n'
             f'Name={NOM_AFFICHE}\n'
-            'Comment=Merge PDF files / Assembler des PDF\n'
-            f'Exec=__ICI__/{NOM}.sh\n'
-            '__ICONE__'
-            'Terminal=false\n'
-            f"Categories={KIT.get('categories_desktop', 'Office;Utility;')}\n",
+            f'Name[fr]={NOM_FR}\n'
+            f'Name[en]={NOM_EN}\n'
+            + (f'Comment={DESCRIPTION_EN}\n' if DESCRIPTION_EN else '')
+            + (f'Comment[fr]={DESCRIPTION_FR}\n' if DESCRIPTION_FR else '')
+            + 'Exec="__ICI__/' + NOM + '.sh"\n'
+            + ('Icon=__ICI__/app/' + ICONE_PNG + '\n' if ICONE_PNG else '')
+            + 'Terminal=false\n'
+            f'Categories={CATEGORIES}\n',
             encoding='utf-8')
+        installeur = PKG / 'installer.sh'
+        installeur.write_text(INSTALLER_SH.replace('__NOM__', NOM)
+                              .replace('__TECH__', NOM_TECHNIQUE),
+                              encoding='utf-8')
+        installeur.chmod(0o755)
+        log('installer.sh et entree de menu')
+
+
+#: Installation sous Linux dans le profil de l'utilisateur : ni sudo, ni
+#: gestionnaire de paquets, comme l'installeur Windows. Les messages sont
+#: dans les deux langues, la locale n'etant pas forcement fiable en console.
+INSTALLER_SH = r"""#!/bin/sh
+# Installe __NOM__ dans le profil de l'utilisateur, sans sudo.
+# Installs __NOM__ into the user's profile, without sudo.
+set -e
+ICI=$(cd "$(dirname "$0")" && pwd)
+NOM_APP=__NOM__
+TECH=__TECH__
+DONNEES="${XDG_DATA_HOME:-$HOME/.local/share}"
+CIBLE="$DONNEES/$TECH"
+echo "Installation dans / Installing into: $CIBLE"
+mkdir -p "$CIBLE"
+# Les donnees de l'utilisateur (reglages, rapports) vivent ailleurs, dans
+# $DONNEES/__NOM__ : elles ne sont jamais touchees ici.
+rm -rf "$CIBLE/python" "$CIBLE/app"
+cp -R "$ICI/python" "$ICI/app" "$ICI/$NOM_APP.sh" "$CIBLE/"
+chmod +x "$CIBLE/$NOM_APP.sh" "$CIBLE/python/bin/"python3*
+APPS="$DONNEES/applications"
+mkdir -p "$APPS"
+sed -e "s|__ICI__|$CIBLE|g" "$ICI/$TECH.desktop" > "$APPS/$TECH.desktop"
+chmod +x "$APPS/$TECH.desktop"
+command -v update-desktop-database >/dev/null 2>&1 && \
+    update-desktop-database "$APPS" >/dev/null 2>&1 || true
+echo "Termine. Lancez « $NOM_APP » depuis le menu des applications, ou :"
+echo "Done. Start \"$NOM_APP\" from the applications menu, or run:"
+echo "  $CIBLE/$NOM_APP.sh"
+"""
+
+
+def _icone_macos(resources: Path) -> str:
+    """Construit l'icone .icns avec les outils du systeme (sips, iconutil).
+    Facultatif : sans icone, le bundle fonctionne tout de meme."""
+    # Une icone .icns fournie (kit.json « icone_icns », produite depuis la
+    # meme source SVG que les autres) l'emporte : rien a reconstruire.
+    icns = KIT.get('icone_icns') or ''
+    if icns and (ROOT / icns).is_file():
+        shutil.copy2(ROOT / icns, resources / 'icone.icns')
+        log('icone macOS : ' + icns)
+        return 'icone.icns'
+    src = ROOT / ICONE_GRANDE if ICONE_GRANDE else None
+    if src is None or not src.exists() or not shutil.which('iconutil') or not shutil.which('sips'):
+        return ''
+    jeu = DIST / 'icone.iconset'
+    shutil.rmtree(jeu, ignore_errors=True)
+    jeu.mkdir(parents=True)
+    try:
+        for taille in (16, 32, 128, 256, 512):
+            for echelle in (1, 2):
+                px = taille * echelle
+                if px > 1024:
+                    continue
+                nom = f'icon_{taille}x{taille}{"@2x" if echelle == 2 else ""}.png'
+                subprocess.run(['sips', '-z', str(px), str(px), str(src),
+                                '--out', str(jeu / nom)], check=True,
+                               capture_output=True)
+        subprocess.run(['iconutil', '-c', 'icns', str(jeu), '-o',
+                        str(resources / 'icone.icns')], check=True,
+                       capture_output=True)
+        log('icone macOS : icone.icns')
+        return 'icone.icns'
+    except (subprocess.SubprocessError, OSError) as exc:
+        log(f'icone macOS non construite ({exc}) : bundle sans icone')
+        return ''
+    finally:
+        shutil.rmtree(jeu, ignore_errors=True)
 
 
 def racine_paquet() -> Path:
@@ -248,13 +377,32 @@ def step_elaguer():
     """Retire ce qui ne sert pas a l'execution."""
     base = racine_paquet()
     avant = sum(f.stat().st_size for f in base.rglob('*') if f.is_file())
-    for motif in ('__pycache__', 'test', 'tests', 'idlelib', 'tkinter',
-                  'turtledemo', 'lib2to3', 'ensurepip'):
-        for chemin in list(base.rglob(motif)):
-            if chemin.is_dir():
-                shutil.rmtree(chemin, ignore_errors=True)
+    for chemin in list(base.rglob('__pycache__')):
+        if chemin.is_dir():
+            shutil.rmtree(chemin, ignore_errors=True)
+    # Bibliotheque standard seulement : un dossier « tests » de site-packages
+    # peut etre un module importe par son paquet (astropy importe
+    # astropy.tests a son chargement ; le retirer cassait l'application).
+    for stdlib in (base / 'python' / 'lib').glob('python3*'):
+        for nom in ('test', 'idlelib', 'tkinter', 'turtledemo', 'lib2to3',
+                    'ensurepip'):
+            shutil.rmtree(stdlib / nom, ignore_errors=True)
+        # Tests de numpy : inutiles a l'execution, comme sous Windows.
+        numpy = stdlib / 'site-packages' / 'numpy'
+        if numpy.is_dir():
+            for chemin in list(numpy.rglob('tests')):
+                if chemin.is_dir():
+                    shutil.rmtree(chemin, ignore_errors=True)
     for chemin in list(base.rglob('*.pyc')):
         chemin.unlink(missing_ok=True)
+    # Sous Linux, libpython de python-build-standalone garde ses symboles de
+    # debogage : 219 Mo, dont l'essentiel ne sert qu'a un debogueur. On ne
+    # retire QUE ceux-la (--strip-debug), jamais la table des symboles
+    # dynamiques dont depend le chargement des modules compiles.
+    if plateforme() == 'linux' and shutil.which('strip'):
+        for lib in (base / 'python' / 'lib').glob('libpython*.so*'):
+            if lib.is_file() and not lib.is_symlink():
+                subprocess.run(['strip', '--strip-debug', str(lib)], check=False)
     apres = sum(f.stat().st_size for f in base.rglob('*') if f.is_file())
     log(f'elagage : {avant/1e6:.0f} Mo -> {apres/1e6:.0f} Mo')
 
@@ -285,6 +433,13 @@ def step_verifier(version):
     if r.returncode != 0:
         raise RuntimeError('Mise a jour inoperante dans le paquet :\n' + r.stderr[-2000:])
     log('verification de la mise a jour : ok')
+    # Le paquet doit annoncer la version qu'on publie : sinon il proposerait
+    # sans fin une mise a jour deja installee.
+    vue = (base / 'app' / KIT.get('fichier_version', 'VERSION')).read_text(
+        encoding='utf-8').strip()
+    if vue != version:
+        raise RuntimeError(f'Le paquet annonce {vue!r}, le tag dit {version!r}')
+    log(f'version annoncee : {vue}')
 
 
 def step_archive(version):
@@ -294,7 +449,8 @@ def step_archive(version):
     if sortie.exists():
         sortie.unlink()
     app = racine_paquet() / 'app'
-    exclus = set(KIT.get('exclus_de_la_maj', []) or [])
+    # ce qui appartient a l'utilisateur ne part jamais dans l'archive
+    exclus = set(KIT.get('exclus_de_la_maj', []) or []) | set(KIT.get('fichiers_proteges') or [])
     with zipfile.ZipFile(sortie, 'w', zipfile.ZIP_DEFLATED) as z:
         for f in sorted(app.rglob('*')):
             rel = f.relative_to(app)
@@ -312,15 +468,19 @@ def step_archive(version):
 
 
 def step_paquet_complet(version):
-    """Le paquet complet, a telecharger la premiere fois."""
-    nom = f'{NOM}-{version}-{plateforme()}.tar.gz'
+    """Le paquet complet, a telecharger la premiere fois.
+
+    Linux : une archive .tar.gz (dossier + installer.sh). macOS : rien ici,
+    l'image disque .dmg est faite par le workflow avec hdiutil.
+    """
+    if plateforme() == 'macos':
+        return None
+    nom = f'{NOM}-{version}-linux-{architecture()}.tar.gz'
     sortie = ROOT / nom
     if sortie.exists():
         sortie.unlink()
-    cible = DIST / f'{NOM}.app' if plateforme() == 'macos' else PKG
-    arc = f'{NOM}.app' if plateforme() == 'macos' else NOM
     with tarfile.open(sortie, 'w:gz') as t:
-        t.add(cible, arcname=arc)
+        t.add(PKG, arcname=NOM)
     log(f'paquet complet : {nom} ({sortie.stat().st_size/1e6:.0f} Mo)')
     return sortie
 

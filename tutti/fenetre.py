@@ -836,8 +836,14 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
         QtWidgets.QMessageBox.information(self, "Tutti", tr("menu.langue.redemarrer"))
 
     def _a_propos(self):
-        QtWidgets.QMessageBox.about(self, tr("menu.a_propos"),
-                                    tr("a_propos.texte", version=__version__))
+        # le logo est le même fichier que l'icône (une seule source : logo.svg)
+        boite = QtWidgets.QMessageBox(self)
+        boite.setWindowTitle(tr("menu.a_propos"))
+        logo = Path(__file__).resolve().parent.parent / "logo_128.png"
+        if logo.exists():
+            boite.setIconPixmap(QtGui.QPixmap(str(logo)))
+        boite.setText(tr("a_propos.texte", version=__version__))
+        boite.exec()
 
     def _basculer_rapports(self, coche: bool):
         try:
