@@ -82,14 +82,98 @@ TEXTES: dict[str, dict[str, str]] = {
     "fenetre.titre": {"fr": "Tutti {version} — assembler des PDF",
                       "en": "Tutti {version} — merge PDF files"},
     "entete.sous_titre": {
-        "fr": "Assembler, convertir et découper des PDF — glissez vos fichiers, rangez-les, c'est prêt.",
-        "en": "Merge, convert and split PDF files — drop your files, put them in order, done."},
+        "fr": "Assembler, convertir, retoucher et découper des PDF — glissez vos fichiers, c'est prêt.",
+        "en": "Merge, convert, touch up and split PDF files — drop your files, done."},
     "liste.vide": {"fr": "Glissez ici vos PDF, images, documents Word, Excel ou PowerPoint\n"
                          "(ou un dossier entier)",
                    "en": "Drop your PDF files, images, Word, Excel or PowerPoint documents here\n"
                          "(or a whole folder)"},
     "onglet.assembler": {"fr": "Assembler et convertir", "en": "Merge and convert"},
     "onglet.decouper": {"fr": "Découper", "en": "Split"},
+    "onglet.pages": {"fr": "Pages", "en": "Pages"},
+    "onglet.finitions": {"fr": "Finitions", "en": "Finishing"},
+    # ---- onglet Pages
+    "pages.vide": {"fr": "Glissez ici UN document pour voir ses pages\n(PDF, Word, image…)\n\n"
+                         "Ensuite : cliquez une page pour la choisir, faites-la glisser pour la "
+                         "déplacer, double-cliquez pour la voir en grand",
+                   "en": "Drop ONE document here to see its pages\n(PDF, Word, image…)\n\n"
+                         "Then: click a page to select it, drag it to move it, "
+                         "double-click to see it full size"},
+    "pages.aucun_document": {"fr": "Aucun document ouvert", "en": "No document open"},
+    "pages.ouvrir": {"fr": "Ouvrir un document…", "en": "Open a document…"},
+    "pages.ouvrir_titre": {"fr": "Choisir le document à retoucher", "en": "Choose the document to touch up"},
+    "pages.chargement": {"fr": "« {nom} » — lecture…", "en": "“{nom}” — reading…"},
+    "pages.document": {"fr": "« {nom} » — {n} page(s) à l'origine", "en": "“{nom}” — {n} page(s) originally"},
+    "pages.format": {"fr": "« {nom} » n'est pas un document que Tutti sait ouvrir.",
+                     "en": "“{nom}” is not a document Tutti can open."},
+    "pages.pivoter_gauche": {"fr": "↺  Pivoter à gauche", "en": "↺  Rotate left"},
+    "pages.pivoter_gauche.astuce": {"fr": "Quart de tour vers la gauche (Ctrl+L)",
+                                    "en": "Quarter turn to the left (Ctrl+L)"},
+    "pages.pivoter_droite": {"fr": "↻  Pivoter à droite", "en": "↻  Rotate right"},
+    "pages.pivoter_droite.astuce": {"fr": "Quart de tour vers la droite (Ctrl+R)",
+                                    "en": "Quarter turn to the right (Ctrl+R)"},
+    "pages.retirer.astuce": {"fr": "Retirer les pages choisies (touche Suppr)",
+                             "en": "Remove the selected pages (Delete key)"},
+    "pages.tout": {"fr": "Tout choisir", "en": "Select all"},
+    "pages.tout.astuce": {"fr": "Choisir toutes les pages, pour les pivoter d'un coup (Ctrl+A)",
+                          "en": "Select every page, to rotate them all at once (Ctrl+A)"},
+    "pages.revenir": {"fr": "Tout annuler", "en": "Undo all"},
+    "pages.revenir.astuce": {"fr": "Revenir aux pages d'origine, dans l'ordre d'origine",
+                             "en": "Go back to the original pages, in the original order"},
+    "pages.enregistrer": {"fr": "Enregistrer…", "en": "Save…"},
+    "pages.enregistrer_titre": {"fr": "Enregistrer le PDF retouché", "en": "Save the touched-up PDF"},
+    "pages.resume_retirees": {"fr": "{n} retirée(s)", "en": "{n} removed"},
+    "pages.resume_tournees": {"fr": "{n} pivotée(s)", "en": "{n} rotated"},
+    "pages.resume_deplacees": {"fr": "ordre changé", "en": "order changed"},
+    "pages.resume_intact": {"fr": "aucun changement pour l'instant", "en": "no change yet"},
+    "pages.astuce_vignette": {"fr": "Page {n} du document d'origine — double-clic pour l'agrandir",
+                              "en": "Page {n} of the original document — double-click to enlarge"},
+    "pages.apercu_titre": {"fr": "Page {n}", "en": "Page {n}"},
+    "pages.pas_tout_retirer": {"fr": "Il doit rester au moins une page.", "en": "At least one page must remain."},
+    "pages.abandon": {"fr": "Les changements apportés à « {nom} » n'ont pas été enregistrés. Les abandonner ?",
+                      "en": "The changes made to “{nom}” have not been saved. Discard them?"},
+    "pages.aucune": {"fr": "Aucune page à enregistrer.", "en": "No page to save."},
+    # ---- onglet Finitions
+    "finir.liste_vide": {"fr": "Glissez ici le ou les PDF à finir\n(chacun donnera un nouveau fichier)",
+                         "en": "Drop the PDF file(s) to finish here\n(each one gives a new file)"},
+    "finir.ouvrir_titre": {"fr": "Choisir les PDF à finir", "en": "Choose the PDF files to finish"},
+    "finir.numeros": {"fr": "Numéros de page", "en": "Page numbers"},
+    "finir.numeroter": {"fr": "Numéroter les pages", "en": "Number the pages"},
+    "finir.ou": {"fr": "Où :", "en": "Where:"},
+    "finir.forme": {"fr": "Forme :", "en": "Style:"},
+    "finir.premier": {"fr": "Commencer à :", "en": "Start at:"},
+    "finir.position.bas_centre": {"fr": "En bas, au centre", "en": "Bottom, centre"},
+    "finir.position.bas_exterieur": {"fr": "En bas, côté extérieur (recto-verso)",
+                                     "en": "Bottom, outer edge (double-sided)"},
+    "finir.position.haut_exterieur": {"fr": "En haut, côté extérieur (recto-verso)",
+                                      "en": "Top, outer edge (double-sided)"},
+    "finir.format.n": {"fr": "3", "en": "3"},
+    "finir.format.n_sur_total": {"fr": "3 / 12", "en": "3 / 12"},
+    "finir.sauter_premiere": {"fr": "Pas de numéro sur la 1re page (page de titre)",
+                              "en": "No number on page 1 (title page)"},
+    "finir.texte_titre": {"fr": "Texte en haut de page", "en": "Text at the top of the page"},
+    "finir.texte_exemple": {"fr": "par exemple : Smetana — La Moldau — Violon I (laisser vide : aucun)",
+                            "en": "for example: Smetana — The Moldau — Violin I (leave empty: none)"},
+    "finir.partout": {"fr": "Sur toutes les pages", "en": "On every page"},
+    "finir.premiere_seule": {"fr": "Sur la 1re page seulement", "en": "On page 1 only"},
+    "finir.fichier": {"fr": "Fichier", "en": "File"},
+    "finir.alleger": {"fr": "Alléger pour l'envoi par e-mail (photos et scans réduits à 150 ppp)",
+                      "en": "Make smaller for e-mail (photos and scans reduced to 150 dpi)"},
+    "finir.alleger.astuce": {"fr": "Le texte et les notes restent nets : seules les images trop fines "
+                                   "sont réduites. Les scans noir et blanc sont déjà légers et restent intacts.",
+                             "en": "Text and notes stay sharp: only over-detailed images are reduced. "
+                                   "Black-and-white scans are already small and are left as they are."},
+    "finir.dest_auto": {"fr": "À côté de chaque fichier, nommé « <nom> - finitions »",
+                        "en": "Next to each file, named “<name> - finished”"},
+    "finir.appliquer": {"fr": "Appliquer", "en": "Apply"},
+    "finir.rien": {"fr": "Choisissez au moins une finition (numéros, texte ou allègement).",
+                   "en": "Choose at least one finishing option (numbers, text or smaller file)."},
+    "finir.fini": {"fr": "Terminé : {n} fichier(s) créé(s).", "en": "Done: {n} file(s) created."},
+    "finir.poids": {"fr": "Poids : {avant} → {apres}.", "en": "Size: {avant} → {apres}."},
+    "finir.annule": {"fr": "Interrompu : {n} fichier(s) déjà terminés sont conservés.",
+                     "en": "Stopped: {n} file(s) already done were kept."},
+    "nom.finitions": {"fr": "finitions", "en": "finished"},
+    "nom.remanie": {"fr": "retouché", "en": "touched up"},
     "bouton.ajouter_pdf": {"fr": "Ajouter des PDF…", "en": "Add PDF files…"},
     "bouton.decouper": {"fr": "Découper", "en": "Split"},
     "dlg.filtre_tout": {"fr": "Fichiers acceptés", "en": "Supported files"},
@@ -161,8 +245,8 @@ TEXTES: dict[str, dict[str, str]] = {
     "dlg.ouvrir": {"fr": "Ouvrir le PDF", "en": "Open the PDF"},
     "dlg.ouvrir_dossier_resultat": {"fr": "Ouvrir le dossier", "en": "Open the folder"},
     "dlg.fermer": {"fr": "Fermer", "en": "Close"},
-    "dlg.quitter_en_cours": {"fr": "Un assemblage est en cours. L'interrompre et quitter ?",
-                             "en": "A merge is in progress. Stop it and quit?"},
+    "dlg.quitter_en_cours": {"fr": "Un travail est en cours. L'interrompre et quitter ?",
+                             "en": "A task is in progress. Stop it and quit?"},
     "dlg.oui": {"fr": "Oui", "en": "Yes"},
     "dlg.non": {"fr": "Non", "en": "No"},
     # ---- menus
@@ -182,36 +266,41 @@ TEXTES: dict[str, dict[str, str]] = {
     "menu.a_propos": {"fr": "À propos", "en": "About"},
     "aide.titre": {"fr": "Mode d'emploi", "en": "Quick help"},
     "aide.texte": {
-        "fr": "<h3>Tutti — assembler des PDF</h3><ol>"
-              "<li><b>Glissez</b> les PDF (ou un dossier) dans la liste, ou utilisez "
-              "<i>Ajouter des PDF…</i></li>"
-              "<li><b>Rangez-les</b> : glisser-déposer dans la liste, boutons "
-              "<i>Monter / Descendre</i>, ou <i>Trier par nom</i> (« 2 » passe avant « 10 »).</li>"
-              "<li>Vérifiez le <b>nom du fichier final</b>, proposé automatiquement.</li>"
-              "<li>Cliquez sur <b>Assembler</b>.</li></ol>"
-              "<p>Les fichiers d'origine ne sont <b>jamais modifiés</b>. Un signet par fichier "
-              "permet de sauter d'une partie à l'autre dans le PDF final.</p>"
-              "<p>Le manuel complet est dans le menu <i>Aide</i>.</p>",
-        "en": "<h3>Tutti — merge PDF files</h3><ol>"
-              "<li><b>Drop</b> the PDF files (or a folder) into the list, or use "
-              "<i>Add PDF files…</i></li>"
-              "<li><b>Put them in order</b>: drag and drop inside the list, "
-              "<i>Move up / Move down</i>, or <i>Sort by name</i> (“2” comes before “10”).</li>"
-              "<li>Check the suggested <b>output file name</b>.</li>"
-              "<li>Click <b>Merge</b>.</li></ol>"
-              "<p>The original files are <b>never modified</b>. One bookmark per file lets "
-              "you jump from part to part in the merged PDF.</p>"
-              "<p>The full user guide is in the <i>Help</i> menu.</p>"},
+        "fr": "<h3>Tutti — quatre onglets</h3>"
+              "<p><b>Assembler et convertir</b> : glissez vos PDF, images ou documents Word, Excel, "
+              "PowerPoint ; rangez-les (glisser-déposer, <i>Monter / Descendre</i>, <i>Trier par nom</i>) ; "
+              "cliquez sur <b>Assembler</b>. Mise en page au choix : pages normales ou livret (A5 sur A4, "
+              "A4 sur A3).</p>"
+              "<p><b>Pages</b> : ouvrez UN document, ses pages s'affichent en vignettes. Choisissez-en, "
+              "puis <i>Pivoter</i>, <i>Retirer</i>, ou faites-les glisser pour changer l'ordre ; "
+              "double-clic pour voir une page en grand. <b>Enregistrer…</b> écrit un nouveau PDF.</p>"
+              "<p><b>Finitions</b> : numéros de page, texte en haut de page (titre, nom de la partie), "
+              "allègement pour l'e-mail — sur un ou plusieurs PDF.</p>"
+              "<p><b>Découper</b> : une page par fichier, ou par plages (1-3, 5, 8-).</p>"
+              "<p>Les fichiers d'origine ne sont <b>jamais modifiés</b>. "
+              "Le manuel complet est dans le menu <i>Aide</i> (touche F1).</p>",
+        "en": "<h3>Tutti — four tabs</h3>"
+              "<p><b>Merge and convert</b>: drop your PDF files, images or Word, Excel, PowerPoint "
+              "documents; put them in order (drag and drop, <i>Move up / Move down</i>, <i>Sort by name</i>); "
+              "click <b>Merge</b>. Layout of your choice: normal pages or booklet (A5 on A4, A4 on A3).</p>"
+              "<p><b>Pages</b>: open ONE document, its pages appear as thumbnails. Select some, then "
+              "<i>Rotate</i>, <i>Remove</i>, or drag them to change the order; double-click to see a page "
+              "full size. <b>Save…</b> writes a new PDF.</p>"
+              "<p><b>Finishing</b>: page numbers, text at the top of the page (title, part name), "
+              "smaller file for e-mail — on one or several PDF files.</p>"
+              "<p><b>Split</b>: one page per file, or by ranges (1-3, 5, 8-).</p>"
+              "<p>The original files are <b>never modified</b>. "
+              "The full user guide is in the <i>Help</i> menu (F1 key).</p>"},
     "a_propos.texte": {
-        "fr": "<b>Tutti {version}</b><br>Assembler plusieurs PDF en un seul.<br><br>"
+        "fr": "<b>Tutti {version}</b><br>Assembler, convertir, retoucher et découper des PDF.<br><br>"
               "<i>Tutti</i> : « tous ensemble », en musique.<br><br>"
-              "Moteur : qpdf (via pikepdf). Les pages sont recopiées telles quelles, sans perte "
-              "de qualité ; les fichiers d'origine ne sont jamais modifiés.<br><br>"
+              "Moteur : qpdf (via pikepdf), vignettes par QtPdf. Les pages sont recopiées telles quelles, "
+              "sans perte de qualité ; les fichiers d'origine ne sont jamais modifiés.<br><br>"
               "Polices : Source Sans 3 et EB Garamond (SIL Open Font License).",
-        "en": "<b>Tutti {version}</b><br>Merge several PDF files into one.<br><br>"
+        "en": "<b>Tutti {version}</b><br>Merge, convert, touch up and split PDF files.<br><br>"
               "<i>Tutti</i>: “all together”, in music.<br><br>"
-              "Engine: qpdf (through pikepdf). Pages are copied as they are, with no loss of "
-              "quality; the original files are never modified.<br><br>"
+              "Engine: qpdf (through pikepdf), thumbnails by QtPdf. Pages are copied as they are, with "
+              "no loss of quality; the original files are never modified.<br><br>"
               "Fonts: Source Sans 3 and EB Garamond (SIL Open Font License)."},
     "manuel.absent": {"fr": "Le manuel est introuvable dans le dossier du programme.",
                       "en": "The user guide could not be found in the program folder."},
@@ -263,6 +352,14 @@ TEXTES: dict[str, dict[str, str]] = {
     "livret.non": {"fr": "Pages normales", "en": "Normal pages"},
     "livret.a5": {"fr": "Livret A5 prêt à imprimer (2 pages par feuille A4, pour plier et agrafer)",
                   "en": "A5 booklet ready to print (2 pages per A4 sheet, to fold and staple)"},
+    "livret.a4": {"fr": "Livret A4 sur feuilles A3 (2 pages A4 par feuille A3, le format des partitions reliées)",
+                  "en": "A4 booklet on A3 sheets (2 A4 pages per A3 sheet, the usual size for bound scores)"},
+    "livret.conseil_a4": {"fr": "Pour imprimer le livret : papier A3, orientation paysage, taille réelle (100 %), "
+                                "recto-verso avec retournement sur le BORD COURT. Pliez la pile au milieu, "
+                                "emboîtez les feuilles et agrafez au pli : on obtient un cahier A4.",
+                          "en": "To print the booklet: A3 paper, landscape, actual size (100%), double-sided "
+                                "flipping on the SHORT EDGE. Fold the stack in the middle, nest the sheets and "
+                                "staple along the fold: you get an A4 booklet."},
     "livret.ordre": {"fr": "Ordre du livret seulement (l'imprimante fait « 2 pages par feuille »)",
                      "en": "Booklet order only (the printer does “2 pages per sheet”)"},
     "livret.conseil_ordre": {"fr": "Les pages sont dans l'ordre du livret. Pour imprimer : option « 2 pages "

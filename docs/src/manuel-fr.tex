@@ -19,7 +19,7 @@
 \vspace{8mm}
 {\sffamily\Huge\bfseries\color{bordeaux} TUTTI\par}
 \vspace{3mm}
-{\sffamily\LARGE\color{ink} Assembler, convertir et découper des PDF\par}
+{\sffamily\LARGE\color{ink} Assembler, convertir, retoucher et découper des PDF\par}
 \vspace{2mm}
 {\sffamily\large\color{summit} Manuel d'utilisation \textbullet{} version \versiontutti\par}
 \vspace{12mm}
@@ -27,7 +27,8 @@
 \sffamily\centering
 \textit{Tutti} : « tous ensemble », en musique.\\[2mm]
 \raggedright
-\textbf{1.} Glissez les PDF \quad \textbf{2.} Rangez-les \quad \textbf{3.} Vérifiez le nom \quad \textbf{4.} Assemblez
+Quatre onglets, dans l'ordre d'un travail :\\[1mm]
+\textbf{Assembler} \quad → \quad \textbf{Pages} \quad → \quad \textbf{Finitions} \qquad et \quad \textbf{Découper}
 \end{tcolorbox}
 \vfill
 {\footnotesize\color{summit}\sffamily Windows \textbullet{} macOS \textbullet{} Linux\par}
@@ -38,21 +39,33 @@
 
 \section{À quoi sert Tutti}
 
-Tutti fait trois choses, sans passer par un site Internet :
-\begin{itemize}
-\item il \textbf{réunit} plusieurs fichiers en un seul PDF, dans l'ordre que vous choisissez, avec un
-      \textbf{signet par partie} — pensé pour les partitions : conducteur et parties séparées ;
-\item il \textbf{convertit en PDF} les images (photos, scans) et les documents Word, Excel et PowerPoint ;
-\item il \textbf{découpe} un PDF en un fichier par page, ou par plages de pages.
-\end{itemize}
-Vos documents restent sur votre ordinateur : rien n'est envoyé sur Internet.
+Tutti remplace les sites Internet du genre « iLovePDF » : tout se fait sur votre ordinateur,
+rien n'est envoyé sur Internet. Chaque onglet de la fenêtre fait un travail :
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X >{\sffamily\bfseries\color{bordeaux}}l c}
+\toprule
+\textbf{Je veux…} & \textbf{\color{ink}Onglet} & \textbf{Page} \\
+\midrule
+réunir plusieurs PDF en un seul (conducteur + parties, avec un signet par partie) & Assembler et convertir & \pageref{sec:assembler} \\
+transformer une photo, un scan, un Word, un Excel ou un PowerPoint en PDF & Assembler et convertir & \pageref{sec:convertir} \\
+faire un livret à plier et agrafer (A5 sur A4, ou A4 sur A3) & Assembler et convertir & \pageref{sec:options} \\
+redresser une page scannée de travers ou couchée & Pages & \pageref{sec:pages} \\
+retirer une page blanche ou en double, changer l'ordre des pages & Pages & \pageref{sec:pages} \\
+numéroter les pages, écrire un titre en haut de chaque page & Finitions & \pageref{sec:finitions} \\
+rendre un PDF assez léger pour l'envoyer par e-mail & Finitions & \pageref{sec:finitions} \\
+faire un fichier par page, ou extraire des pages & Découper & \pageref{sec:decouper} \\
+\bottomrule
+\end{tabularx}
+\end{center}
 
 \begin{securitebox}
 \begin{itemize}
 \item Les fichiers d'origine ne sont \textbf{jamais modifiés} : Tutti les lit, il n'écrit que le nouveau PDF.
 \item Les pages sont recopiées \textbf{telles quelles}, sans perte de qualité ni « réimpression ».
 \item Tutti refuse d'écrire par-dessus l'un des fichiers à assembler.
-\item Une coupure de courant pendant l'assemblage ne laisse jamais de PDF à moitié écrit.
+\item Une coupure de courant pendant l'écriture ne laisse jamais de PDF à moitié écrit.
 \end{itemize}
 \end{securitebox}
 
@@ -102,7 +115,7 @@ Vous pouvez changer d'avis à tout moment dans le menu \menu{Aide}.
 
 \capture[0.82]{../capture_vide-fr.png}
 
-\section{Assembler des PDF, pas à pas}
+\section{Assembler des PDF, pas à pas}\label{sec:assembler}
 
 \subsection{Ajouter les fichiers}
 \begin{itemize}
@@ -141,7 +154,7 @@ Cliquez sur \menu{Assembler}. Une barre montre l'avancement ; le bouton devient
 \astuce{Si le fichier final existe déjà, Tutti demande s'il faut le remplacer. S'il est ouvert
 dans un lecteur PDF, fermez-le d'abord : Windows interdit de remplacer un fichier ouvert.}
 
-\section{Les options}
+\section{Les options}\label{sec:options}
 
 \begin{description}[style=nextline,leftmargin=5mm,font=\sffamily\bfseries\color{bordeaux}]
 \item[Un signet par fichier]
@@ -156,11 +169,15 @@ Pour un \textbf{livret plié et agrafé au milieu} (programme de concert, par ex
 se fait à partir de \textbf{tout ce qui est dans la liste}, dans l'ordre de la liste : un seul
 fichier de plusieurs pages, ou plusieurs fichiers d'une page chacun (page 1, page 2…), ou un
 mélange. Le nombre de pages est complété par des pages blanches jusqu'à un multiple de 4 ; elles
-se placent à la fin du livret. Deux choix :
+se placent à la fin du livret. Trois choix :
 \begin{itemize}
 \item \textbf{Livret A5 prêt à imprimer} : deux pages réduites en A5, côte à côte sur chaque face
       d'une feuille A4 paysage. Imprimez en A4, paysage, \textbf{taille réelle (100 \%)},
       \textbf{recto-verso avec retournement sur le bord court}.
+\item \textbf{Livret A4 sur feuilles A3} : le format des partitions reliées. Deux pages A4,
+      \textbf{sans réduction}, côte à côte sur chaque face d'une feuille A3 paysage. Il faut une
+      imprimante A3 (ou un imprimeur) : A3, paysage, taille réelle, recto-verso bord court.
+      On obtient un cahier au format A4.
 \item \textbf{Ordre du livret seulement} : les pages gardent leur format, simplement remises dans
       l'ordre du livret (8, 1, 2, 7, 6, 3, 4, 5 pour 8 pages). À l'impression, choisissez
       \textbf{2 pages par feuille}, paysage, recto-verso bord court.
@@ -193,7 +210,7 @@ Le fichier est sans doute ouvert dans un autre programme & Fermez le PDF final d
 \end{tabularx}
 \end{center}
 
-\section{Convertir des images et des documents en PDF}
+\section{Convertir des images et des documents en PDF}\label{sec:convertir}
 
 Dans l'onglet \menu{Assembler et convertir}, la liste accepte aussi :
 \begin{center}
@@ -225,7 +242,95 @@ puis \menu{Assembler} fabrique le PDF.
       Si aucun des deux n'est installé, le fichier est signalé en rouge.
 \end{itemize}
 
-\section{Découper un PDF}
+\section{Retoucher les pages (onglet Pages)}\label{sec:pages}
+
+L'onglet \menu{Pages} montre \textbf{toutes les pages d'un document en vignettes}, pour les
+pivoter, les retirer ou changer leur ordre. Il travaille sur \textbf{un document à la fois}.
+
+\subsection{Ouvrir le document}
+Glissez \textbf{un} fichier dans le grand cadre, ou cliquez sur \menu{Ouvrir un document…}.
+Un PDF, mais aussi un Word, un PowerPoint, une image… (converti d'abord, comme dans le premier
+onglet). Les vignettes apparaissent l'une après l'autre ; sous chacune, le \textbf{numéro de la
+page dans le document d'origine}.
+
+\capture[0.82]{../capture_pages-fr.png}
+
+\subsection{Choisir des pages}
+\begin{itemize}
+\item un \textbf{clic} choisit une page (elle se colore) ;
+\item \touche{Ctrl}+clic ajoute ou retire une page du choix ; \touche{Maj}+clic choisit toute une suite ;
+\item \menu{Tout choisir} (\touche{Ctrl}+\touche{A}) choisit toutes les pages ;
+\item un \textbf{double-clic} affiche la page en grand, pour la lire avant de décider.
+\end{itemize}
+
+\subsection{Pivoter, retirer, déplacer}
+\begin{description}[style=nextline,leftmargin=5mm,font=\sffamily\bfseries\color{bordeaux}]
+\item[↺ Pivoter à gauche, ↻ Pivoter à droite]
+Un quart de tour à chaque clic (\touche{Ctrl}+\touche{L} / \touche{Ctrl}+\touche{R}), sur toutes les
+pages choisies. Une page pivotée porte le signe ↻ sous sa vignette. Le contenu de la page n'est pas
+touché : seule son orientation change, sans aucune perte de qualité.
+\item[Retirer]
+Enlève les pages choisies du résultat (\touche{Suppr}). Le document d'origine, lui, garde toutes
+ses pages.
+\item[Déplacer]
+\textbf{Faites glisser} une vignette (ou plusieurs vignettes choisies) à sa nouvelle place.
+\item[Tout annuler]
+Revient aux pages d'origine, dans l'ordre d'origine.
+\end{description}
+La ligne sous les vignettes résume les changements : « 12 pages — 1 retirée(s) — 2 pivotée(s) —
+ordre changé ».
+
+\subsection{Enregistrer}
+\menu{Enregistrer…} demande où écrire le nouveau PDF ; Tutti propose
+\fichier{<nom> - retouché.pdf} à côté du document. \textbf{Le document d'origine n'est jamais
+modifié} : Tutti refuse d'écrire par-dessus. Si vous fermez Tutti ou ouvrez un autre document
+alors que des changements ne sont pas enregistrés, Tutti demande d'abord.
+
+\astuce{Une partition scannée dont une page est arrivée couchée : ouvrez-la dans \menu{Pages},
+cliquez la page couchée, \menu{Pivoter}, puis \menu{Enregistrer…}. Trente secondes.}
+
+\section{Finitions : numéros, titre, poids}\label{sec:finitions}
+
+L'onglet \menu{Finitions} ajoute la touche finale à un ou \textbf{plusieurs} PDF à la fois — par
+exemple à toutes les parties d'une partition. Chaque fichier donne un \textbf{nouveau} fichier,
+\fichier{<nom> - finitions.pdf}, à côté de l'original (ou dans le dossier de votre choix).
+
+\capture[0.82]{../capture_finitions-fr.png}
+
+\begin{description}[style=nextline,leftmargin=5mm,font=\sffamily\bfseries\color{bordeaux}]
+\item[Numéros de page]
+\begin{itemize}
+\item \textbf{Où} : en bas au centre ; ou \textbf{côté extérieur}, c'est-à-dire à droite sur
+      les pages impaires et à gauche sur les paires — le bord libre d'un recto-verso relié, là
+      où le pouce tourne la page ; en bas ou en haut.
+\item \textbf{Forme} : « 3 », ou « 3 / 12 » (numéro et nombre total de pages).
+\item \textbf{Commencer à} : le numéro de la première page, pour une partie qui fait suite à une autre.
+\item \textbf{Pas de numéro sur la 1re page} : la page de titre n'est pas numérotée, mais elle
+      compte (la suivante porte le 2).
+\end{itemize}
+\item[Texte en haut de page]
+Le titre de l'œuvre, le nom de la partie (« Smetana — La Moldau — Violon I »)… centré en haut de
+\textbf{toutes les pages}, ou de la \textbf{première seulement}. Laissez la case vide pour ne rien
+écrire.
+\item[Alléger pour l'envoi par e-mail]
+Les photos et les scans en couleur ou en gris trop fins sont réduits à 150 points par pouce —
+largement assez pour l'écran et une imprimante de bureau. Le texte et les notes de musique
+écrits par un logiciel (Finale, Sibelius, Word…) ne sont pas des images : ils restent
+parfaitement nets. Les scans en noir et blanc sont déjà légers et restent intacts. À la fin, Tutti
+affiche le poids avant et après.
+\end{description}
+
+\begin{center}
+\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.6pt}%
+\fcolorbox{summit}{white}{\includegraphics[width=0.42\linewidth]{../exemple_finitions-fr.png}}\\[1mm]
+{\small\sffamily\color{summit} Résultat : titre en haut, « 2 / 9 » en bas côté extérieur (page paire : à gauche).}
+\end{center}
+
+\astuce{Numéros et texte s'écrivent en petits caractères (10 points), à 7 mm du bord : au-delà de
+la marge que l'imprimante ne sait pas imprimer, en général en deçà de la première portée.
+Si une partition remplit sa page jusqu'au bord, préférez les numéros \og en haut\fg{} ou pas de texte.}
+
+\section{Découper un PDF}\label{sec:decouper}
 
 Onglet \menu{Découper} :
 \begin{enumerate}
@@ -254,6 +359,13 @@ avant de les remplacer.
 \item \textbf{Un tableau Excel en PDF} : glissez-le seul dans \menu{Assembler et convertir}.
 \item \textbf{Les pages 3 à 5 d'une présentation} : glissez le \fichier{.pptx} dans
       \menu{Découper}, plages \fichier{3-5}.
+\item \textbf{Une partition complète, propre et prête à envoyer} :
+      \menu{Assembler} les parties → ouvrir le résultat dans \menu{Pages} pour redresser une page
+      couchée et retirer une page blanche → \menu{Finitions} : numéros « 3 / 12 » côté extérieur,
+      titre en haut, \og alléger\fg{} → envoyer le fichier \fichier{- finitions.pdf}.
+\item \textbf{Un livret de programme de concert} : assemblez les pages (Word, images…), puis
+      mise en page \menu{Livret A5} — ou, pour numéroter d'abord, \menu{Finitions} puis
+      \menu{Assembler} le fichier numéroté en livret.
 \end{itemize}
 
 \section{Mises à jour}
@@ -282,9 +394,18 @@ Sans connexion Internet, le signalement est enregistré dans un fichier que Tutt
 \renewcommand{\arraystretch}{1.35}
 \begin{tabular}{ll}
 \toprule
-\touche{Ctrl}+\touche{O} & Ajouter des PDF \\
+\multicolumn{2}{l}{\sffamily\bfseries\color{bordeaux} Assembler et convertir} \\
+\touche{Ctrl}+\touche{O} & Ajouter des fichiers \\
 \touche{Alt}+\touche{↑} \ / \ \touche{Alt}+\touche{↓} & Monter / descendre le fichier sélectionné \\
 \touche{Suppr} & Retirer le fichier sélectionné de la liste \\
+\midrule
+\multicolumn{2}{l}{\sffamily\bfseries\color{bordeaux} Pages} \\
+\touche{Ctrl}+\touche{L} \ / \ \touche{Ctrl}+\touche{R} & Pivoter à gauche / à droite \\
+\touche{Suppr} & Retirer les pages choisies \\
+\touche{Ctrl}+\touche{A} & Choisir toutes les pages \\
+double-clic & Voir la page en grand \\
+\midrule
+\multicolumn{2}{l}{\sffamily\bfseries\color{bordeaux} Partout} \\
 \touche{F1} & Ouvrir ce manuel \\
 \touche{Ctrl}+\touche{Q} & Quitter \\
 \bottomrule
@@ -293,7 +414,7 @@ Sans connexion Internet, le signalement est enregistré dans un fichier que Tutt
 
 \vfill
 {\footnotesize\color{summit}\sffamily
-Tutti utilise qpdf (via pikepdf) et les polices Source Sans 3 et EB Garamond (SIL Open Font
+Tutti utilise qpdf (via pikepdf), QtPdf pour les vignettes, et les polices Source Sans 3 et EB Garamond (SIL Open Font
 License). Exemples de ce manuel : fichiers fictifs.\par}
 
 \end{document}

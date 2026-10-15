@@ -1,6 +1,6 @@
 # Tutti — progression
 
-## État au 12/10/2026
+## État au 15/10/2026
 
 **Version publiée : 1.2.0** — Windows, macOS (Apple Silicon et Intel), Linux (x86_64 et ARM64).
 Liens permanents : `https://github.com/ARP273-ROSE/Tutti/releases/latest/download/Tutti-Setup.exe`
@@ -16,11 +16,19 @@ Liens permanents : `https://github.com/ARP273-ROSE/Tutti/releases/latest/downloa
   est converti puis découpé), multiprocessus au-delà de 40 fichiers.
 - **Livret** : *A5 prêt à imprimer* (2 pages par feuille A4 paysage) ou *ordre du livret seulement*
   (pour l'option « 2 pages par feuille » de l'imprimante), depuis un ou plusieurs fichiers.
+- **Pages** (1.3.0) : vignettes QtPdf rendues dans un fil de fond (`tutti/onglet_pages.py`),
+  pivoter / retirer / déplacer / aperçu en grand, écriture par `pages.remanier` (attribut /Rotate,
+  aucune réimpression).
+- **Finitions** (1.3.0, `tutti/onglet_finitions.py`, moteur `tutti/pages.py`) : numéros (centre ou
+  côté extérieur, « n » ou « n / total »), texte en tête, allègement (images > 150 ppp sur la page
+  → JPEG 80) ; Helvetica non embarquée + table de chasses WinAnsi ; placement dans le repère de la
+  page VUE (rotation 0/90/180/270), contenu d'origine encadré q … Q.
+- **Livret A4 sur A3** (1.3.0) : `Options.livret = "a4"`.
 - Bilingue FR/EN avec détection de la langue d'affichage ; apparence figée (Fusion, palette,
   polices OFL embarquées) ; mise à jour automatique et rapports d'incident (kit commun).
 
 ### Vérifié
-- 38 tests (moteur, conversion, découpage, livret, traductions, fenêtre hors écran) verts sous
+- 70 tests (moteur, pages et finitions, conversion, découpage, livret, traductions, fenêtre hors écran) verts sous
   Linux et Windows (CI `tests.yml`).
 - Paquet Linux construit et exécuté pour de vrai (assemblage PNG + PDF en ligne de commande).
 - Conversion LibreOffice vérifiée avec la vraie ligne de commande.
@@ -35,6 +43,10 @@ Liens permanents : `https://github.com/ARP273-ROSE/Tutti/releases/latest/downloa
 - Paquets macOS jamais ouverts sur un vrai Mac.
 
 ### Pièges déjà payés
+- 🔴 Le kit élague Qt6Pdf/QtPdf des paquets : kit.json `qt_garder: ["Pdf"]` (option ajoutée au kit le
+  15/10/2026) + `qt_attendus` par système pour que la construction échoue s'il manque.
+- QtPdf rend la page sur fond TRANSPARENT : composer sur du blanc (`onglet_pages.sur_blanc`), sinon la
+  vignette prend la couleur de l'ombre ou de la sélection.
 - pikepdf ≥ 10.14 n'a plus de roue macOS x86_64 → borne `<10.14` par marqueur dans `requirements.txt`.
 - pip refuse `not (...)` dans un marqueur d'environnement : écrire
   `sys_platform != "darwin" or platform_machine != "x86_64"`.

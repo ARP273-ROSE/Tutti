@@ -39,6 +39,13 @@ on:
         description: "Publier en BROUILLON (invisible pour la mise a jour automatique tant qu'il n'est pas publie)"
         type: boolean
         default: false
+      # Construire et verifier tous les paquets SANS RIEN PUBLIER : ni tag, ni
+      # Release, ni brouillon ; les paquets restent en artefacts de
+      # construction (repris de Coupole 0.7.0).
+      essai:
+        description: "ESSAI : construire et verifier les paquets sans rien publier"
+        type: boolean
+        default: false
   # Appelable depuis un autre workflow du depot. C'est indispensable quand une
   # CI cree elle-meme le tag : GitHub ne declenche aucun workflow sur un
   # evenement produit par le jeton d'un workflow (protection anti-boucle), si
@@ -55,6 +62,17 @@ on:
           reprend le commit declencheur, plus ancien d'une version."
         required: false
         type: string
+      brouillon:
+        description: "Publier en BROUILLON (le workflow appelant le demande quand des
+          installations dependent de la mise a jour automatique)"
+        required: false
+        type: boolean
+        default: false
+      essai:
+        description: "Construire et verifier sans rien publier"
+        required: false
+        type: boolean
+        default: false
   # @PLANIFICATION@
 
 permissions:
@@ -329,6 +347,12 @@ jobs:
           for module in kit.get('verification_import', []):
               __import__(module)
               print('  import OK :', module)
+          # kit.json « essai_embarquees » (« module:fonction ») : bibliotheques
+          # facultatives embarquees essayees pour de vrai, comme sous macOS et Linux
+          essai = kit.get('essai_embarquees')
+          if essai:
+              m, _, f = essai.partition(':')
+              print('  bibliotheques embarquees :', getattr(__import__(m, fromlist=[f]), f)())
           attendue = '${{ steps.version.outputs.value }}'
           vue = pathlib.Path(r'$PKG/app/' + kit['fichier_version']).read_text(encoding='utf-8').strip()
           if vue != attendue:
@@ -339,6 +363,16 @@ jobs:
           assert updater.is_packaged(), 'paquet non reconnu par la mise a jour'
           print('paquet fonctionnel, version', vue)
           "
+
+      # Le paquet Windows lance l'application elle-meme en mode verification,
+      # comme les paquets macOS et Linux (« --check », sans ecran).
+      - name: Verifier l'application dans le paquet (--check)
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          PKG="$RUNNER_TEMP/build/${{ steps.kit.outputs.nom_fichier }}"
+          (cd "$PKG/app" && "$PKG/python/python.exe" -B "${{ steps.kit.outputs.point_entree }}" --check)
 
       # Controles joues SUR LE PAQUET CONSTRUIT, avec son propre Python
       # (kit.json « controles_paquet ») : copies dans app/, lances depuis
@@ -473,7 +507,8 @@ jobs:
           import json
           k = json.load(open('kit.json'))
           for cle in ('nom_technique', 'nom_fichier', 'nom_affiche',
-                      'depot_distribution', 'fichier_version'):
+                      'depot_distribution', 'fichier_version',
+                      'artefact_prealable', 'artefact_dossier', 'paquet_deb'):
               print(f"{cle}={k.get(cle, '')}")
           PY
 
@@ -491,6 +526,16 @@ jobs:
             echo "::error::Le depot annonce '$FICHIER' mais le tag dit '$TAG'."
             exit 1
           fi
+
+      # Le binaire produit en amont (moteur 3D exporte pour chaque systeme)
+      # sert aussi aux paquets macOS et Linux : kit.json « copies », avec
+      # « systemes », dit lequel va dans quel paquet.
+      - name: Recuperer l'artefact prealable
+        if: ${{ steps.kit.outputs.artefact_prealable != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ steps.kit.outputs.artefact_prealable }}
+          path: ${{ steps.kit.outputs.artefact_dossier }}
 
       - name: Python de construction
         uses: actions/setup-python@v5
@@ -537,6 +582,37 @@ jobs:
           NOM="${{ steps.kit.outputs.nom_fichier }}"
           "dist/$NOM.app/Contents/MacOS/$NOM" --check
 
+      # Paquet Debian/Ubuntu (facultatif, kit.json « paquet_deb » : script du
+      # depot qui le construit depuis dist/<Nom>, repris de Coupole) ; essaye
+      # dans un conteneur Ubuntu nu, dependances tirees par apt : une
+      # bibliotheque systeme oubliee dans « Depends » se voit ici.
+      - name: Paquet Debian (Linux)
+        if: matrix.plateforme == 'linux' && steps.kit.outputs.paquet_deb != ''
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: python3 "${{ steps.kit.outputs.paquet_deb }}" --version ${{ steps.version.outputs.value }}
+
+      - name: Essai du paquet Debian dans un conteneur nu (Linux)
+        if: matrix.plateforme == 'linux' && steps.kit.outputs.paquet_deb != ''
+        shell: bash
+        run: |
+          case "${{ matrix.arch }}" in
+            x86_64) ARCH=amd64 ;;
+            arm64)  ARCH=arm64 ;;
+          esac
+          TECH="${{ steps.kit.outputs.nom_technique }}"
+          DEB=$(ls *_"$ARCH".deb | head -1)
+          IMAGE=public.ecr.aws/ubuntu/ubuntu:24.04
+          for i in 1 2 3; do docker pull -q "$IMAGE" && break || { IMAGE=ubuntu:24.04; sleep 20; docker pull -q "$IMAGE" && break; }; done
+          docker run --rm -v "$PWD:/src:ro" -e DEBIAN_FRONTEND=noninteractive -e QT_QPA_PLATFORM=offscreen "$IMAGE" bash -euxc '
+            apt-get update -qq
+            apt-get install -y -qq --no-install-recommends /src/'"$DEB"' >/dev/null
+            '"$TECH"' --version
+            '"$TECH"' --check
+            apt-get remove -y -qq '"$TECH"' >/dev/null
+            test ! -e /opt/'"$TECH"' && test ! -e /usr/bin/'"$TECH"' && echo "desinstallation propre"
+          '
+
       - name: Image disque (macOS)
         if: matrix.plateforme == 'macos'
         run: |
@@ -553,9 +629,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: paquet-${{ matrix.plateforme }}-${{ matrix.arch }}
+          # *-maj-*.zip : archive de mise a jour propre a ce systeme (kit.json
+          # « archive_par_systeme ») ; *-linux.AppImage : passerelle des
+          # anciens paquets PyInstaller (« passerelle_pyinstaller »)
           path: |
             *.dmg
             *-linux-*.tar.gz
+            *-maj-*.zip
+            *-linux.AppImage
+            *.deb
           if-no-files-found: error
 
   # ──────────────────────────────────────────────────────────────────────
@@ -563,6 +645,8 @@ jobs:
   # ──────────────────────────────────────────────────────────────────────
   publier:
     needs: [decider, tests, build, build-unix]
+    # essai : tout est construit et verifie, rien n'est publie
+    if: ${{ !inputs.essai }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -608,6 +692,10 @@ jobs:
              [ -f "$f" ] || continue
              cp "$f" "$(echo "$f" | sed -e "s/^$N-$V-/$N-/")"
            done)
+          # Empreintes de tous les fichiers publies : de quoi verifier un
+          # telechargement a la main, et ce qu'exigeaient les mises a jour
+          # des anciens paquets (refus sans SHA256SUMS).
+          (cd publication && sha256sum * > SHA256SUMS && cat SHA256SUMS)
           ls -lh publication
 
       # Notes de la Release : une section par langue (« ## English »,
@@ -634,6 +722,10 @@ jobs:
               ('Linux x86_64', f'{nom}-{V}-linux-x86_64.tar.gz'),
               ('Linux ARM64', f'{nom}-{V}-linux-arm64.tar.gz'),
           ]
+          # paquets Debian/Ubuntu (kit.json « paquet_deb ») : noms stables
+          for deb in sorted(os.listdir('publication')):
+              if deb.endswith('.deb') and '-linux-' in deb:
+                  fichiers.append(('Debian/Ubuntu ' + deb.rsplit('-', 1)[-1][:-4], deb))
 
           def journal(cle):
               chemin = k.get(cle) or ''

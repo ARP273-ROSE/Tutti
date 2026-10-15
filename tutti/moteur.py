@@ -86,7 +86,8 @@ class Options:
     signets: bool = True            # un signet par fichier source
     recto: bool = False             # chaque fichier commence sur une page impaire
     # Livret : "" (pages normales), "a5" (2 pages A5 par feuille A4, prêt à
-    # imprimer) ou "ordre" (pages inchangées, remises dans l'ordre du livret,
+    # imprimer), "a4" (2 pages A4 par feuille A3, le format des partitions
+    # reliées) ou "ordre" (pages inchangées, remises dans l'ordre du livret,
     # pour l'option « 2 pages par feuille » de l'imprimante). True vaut "a5".
     livret: str | bool = ""
     titres_signets: dict = field(default_factory=dict)  # chemin -> titre imposé
@@ -405,8 +406,11 @@ def assembler(sources: Sequence[Path], sortie: Path, options: Options | None = N
             # plusieurs fichiers d'une page mis bout à bout dans l'ordre de la
             # liste) est réarrangé en livret. Les signets n'auraient plus de
             # sens : les pages ne se suivent plus.
-            livret = (ordonner_livret(resultat) if mode_livret == "ordre"
-                      else imposer_livret(resultat))
+            if mode_livret == "ordre":
+                livret = ordonner_livret(resultat)
+            else:
+                livret = imposer_livret(resultat, A3_PAYSAGE if mode_livret == "a4"
+                                        else A4_PAYSAGE)
             ouverts.append(resultat)
             resultat = livret
         elif options.signets and debuts:
@@ -439,6 +443,7 @@ def assembler(sources: Sequence[Path], sortie: Path, options: Options | None = N
 
 
 A4_PAYSAGE = (841.8898, 595.2756)
+A3_PAYSAGE = (1190.5512, 841.8898)
 
 
 def ordre_livret(nb_pages: int) -> list[tuple[int | None, int | None]]:
@@ -463,7 +468,8 @@ def ordre_livret(nb_pages: int) -> list[tuple[int | None, int | None]]:
 
 def imposer_livret(source, format_feuille=A4_PAYSAGE):
     """Nouveau PDF : deux pages côte à côte par face de feuille, dans l'ordre
-    du livret. Chaque page est réduite (A4 → A5) sans être déformée. À
+    du livret. Chaque page est mise à l'échelle de sa demi-feuille sans être
+    déformée : A4 → A5 sur une feuille A4, A4 tel quel sur une feuille A3. À
     imprimer en recto-verso, retournement sur le bord COURT."""
     import pikepdf
 

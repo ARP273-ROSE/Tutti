@@ -2,8 +2,8 @@
 
 # Tutti
 
-**Merge, convert and split PDF files — on your own computer.**
-**Assembler, convertir et découper des PDF — sur votre ordinateur.**
+**Merge, convert, touch up and split PDF files — on your own computer.**
+**Assembler, convertir, retoucher et découper des PDF — sur votre ordinateur.**
 
 *Tutti*: “all together”, in music. Windows · macOS · Linux · English / Français.
 
@@ -35,8 +35,15 @@ Tutti does what online PDF tools do, without uploading anything:
   Microsoft Office when installed (Windows), otherwise by LibreOffice — read-only, macros disabled.
 - **Split** a PDF — or a Word, Excel, PowerPoint document or image — into one file per page, or by
   page ranges (`1-8, 9-16, 17-`). Everything combines: a 6-page Word file becomes six one-page PDFs.
-- **A5 booklet** for folding and stapling (concert programmes): pages imposed two per A4 sheet in
-  saddle-stitch order — print double-sided, flip on the short edge.
+- **Pages**: see every page of a document as a thumbnail, **rotate** pages scanned sideways,
+  **remove** blank or duplicate pages, **reorder** them by dragging; double-click to see a page full
+  size. Rotation only changes the page orientation: no loss of quality.
+- **Finishing**, on one or many files at once: **page numbers** (bottom centre or outer edge for
+  double-sided printing, “3” or “3 / 12”, start number, no number on the title page), **text at the
+  top** of every page or of page 1, and **smaller files for e-mail** (photos and colour scans reduced
+  to 150 dpi; text and engraved music stay vector-sharp).
+- **Booklets** for folding and stapling: **A5 on A4** (concert programmes) or **A4 on A3** (bound
+  scores), in saddle-stitch order — print double-sided, flip on the short edge.
 - Option for double-sided printing: every part starts on a right-hand page.
 
 **Safe**: originals are never modified; Tutti refuses to overwrite a source file; output is written
@@ -72,8 +79,15 @@ Tutti fait ce que font les sites de PDF en ligne, sans rien envoyer sur Internet
   coupées.
 - **Découper** un PDF — ou un document Word, Excel, PowerPoint, ou une image — en un fichier par page,
   ou par plages de pages (`1-8, 9-16, 17-`). Tout se combine : un Word de 6 pages donne six PDF d'une page.
-- **Livret A5** à plier et agrafer (programmes de concert) : pages imposées deux par feuille A4 dans
-  l'ordre du pliage — imprimer en recto-verso, retournement sur le bord court.
+- **Pages** : toutes les pages d'un document en vignettes, pour **pivoter** une page scannée couchée,
+  **retirer** une page blanche ou en double, **changer l'ordre** en faisant glisser ; double-clic pour
+  voir une page en grand. Pivoter ne change que l'orientation : aucune perte de qualité.
+- **Finitions**, sur un ou plusieurs fichiers à la fois : **numéros de page** (en bas au centre ou côté
+  extérieur pour le recto-verso, « 3 » ou « 3 / 12 », numéro de départ, pas de numéro sur la page de
+  titre), **texte en haut** de chaque page ou de la première, et **allègement pour l'e-mail** (photos et
+  scans couleur réduits à 150 ppp ; texte et notes gravées restent nets).
+- **Livrets** à plier et agrafer : **A5 sur A4** (programmes de concert) ou **A4 sur A3** (partitions
+  reliées), dans l'ordre du pliage — imprimer en recto-verso, retournement sur le bord court.
 - Option recto-verso : chaque partie commence sur une page de droite.
 
 **Sûr** : les originaux ne sont jamais modifiés ; Tutti refuse d'écraser un fichier source ; le

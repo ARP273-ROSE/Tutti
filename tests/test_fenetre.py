@@ -130,7 +130,7 @@ def test_onglet_decouper(app, tmp_path, monkeypatch):
     monkeypatch.setattr(QtGui.QDesktopServices, "openUrl", lambda url: True)
     src = fabriquer(tmp_path / "Partition.pdf", 5, 500)
     w = FenetrePrincipale()
-    w.onglets.setCurrentIndex(1)
+    w.onglets.setCurrentIndex(w.onglets.count() - 1)
     assert not w.b_decouper.isEnabled()
     w.ajouter_a_decouper([str(src), str(tmp_path / "ignore.txt")])
     assert w.liste_d.count() == 1
@@ -179,4 +179,82 @@ def test_filigrane_tient_dans_une_liste_etroite(app):
     for y in range(0, hauteur, 3):
         for x in list(range(0, 8)) + list(range(largeur - 8, largeur)):
             assert image.pixelColor(x, y) == fond, (x, y)
+    w.close()
+
+
+def test_onglet_pages(app, tmp_path, monkeypatch):
+    """Ouvrir un document, attendre les vignettes, pivoter, retirer, déplacer,
+    enregistrer : le fichier écrit suit exactement ce que montre la grille."""
+    from PyQt6 import QtGui
+    from tutti.onglet_pages import ROLE_PAGE
+    monkeypatch.setattr(QtGui.QDesktopServices, "openUrl", lambda url: True)
+    src = fabriquer(tmp_path / "Partition.pdf", 4, 595)
+    sortie = tmp_path / "Partition - retouché.pdf"
+    monkeypatch.setattr(QtWidgets.QFileDialog, "getSaveFileName",
+                        lambda *a, **k: (str(sortie), ""))
+    w = FenetrePrincipale()
+    w.c_ouvrir.setChecked(True)
+    w.show()
+    o = w.onglet_pages
+    w.onglets.setCurrentWidget(o)
+    assert not o.b_enregistrer.isEnabled()
+    o.ouvrir(str(src))
+    assert attendre(app, lambda: o.grille.count() == 4 and len(o.images) == 4)
+    assert "aucun changement" in o.l_resume.text()
+
+    o.grille.item(1).setSelected(True)
+    o.pivoter(90)
+    o.grille.clearSelection()
+    o.grille.item(2).setSelected(True)
+    o.retirer()
+    # la dernière page passe en tête (comme un glisser-déposer)
+    o.grille.insertItem(0, o.grille.takeItem(o.grille.count() - 1))
+    o._majeur()
+    assert [o.grille.item(i).data(ROLE_PAGE) for i in range(o.grille.count())] == [3, 0, 1]
+    assert "1 retirée" in o.l_resume.text() and "1 pivotée" in o.l_resume.text()
+    assert o.modifications_perdues()
+
+    o.enregistrer()
+    assert attendre(app, lambda: not o.en_cours)
+    with pikepdf.open(sortie) as pdf:
+        assert len(pdf.pages) == 3
+        assert [int(p.obj.get("/Rotate", 0)) for p in pdf.pages] == [0, 0, 90]
+    assert not o.modifications_perdues()      # enregistré : pas de question en fermant
+    w.close()
+
+
+def test_onglet_finitions(app, tmp_path, monkeypatch):
+    from PyQt6 import QtGui
+    monkeypatch.setattr(QtGui.QDesktopServices, "openUrl", lambda url: True)
+    monkeypatch.setattr(QtWidgets.QMessageBox, "exec", lambda self: 0)
+    a = fabriquer(tmp_path / "Violon I.pdf", 3, 595)
+    b = fabriquer(tmp_path / "Violon II.pdf", 2, 595)
+    w = FenetrePrincipale()
+    f = w.onglet_finitions
+    f.c_numeros.setChecked(False)
+    f.c_alleger.setChecked(False)
+    f.ajouter([str(a), str(b)])
+    assert f.liste.count() == 2
+    assert not f.b_appliquer.isEnabled()      # aucune finition choisie
+    f.c_numeros.setChecked(True)
+    f.cb_position.setCurrentIndex(f.cb_position.findData("bas_exterieur"))
+    f.e_texte.setText("La Moldau")
+    assert f.b_appliquer.isEnabled()
+    f._appliquer_ou_annuler()
+    assert attendre(app, lambda: not f.en_cours)
+    for nom, n in (("Violon I", 3), ("Violon II", 2)):
+        with pikepdf.open(tmp_path / f"{nom} - finitions.pdf") as pdf:
+            assert len(pdf.pages) == n
+            contenu = b"".join(s.read_bytes() for s in pdf.pages[-1].Contents) \
+                if isinstance(pdf.pages[-1].Contents, pikepdf.Array) else pdf.pages[-1].Contents.read_bytes()
+            assert "La Moldau".encode("cp1252").hex().encode() in contenu
+    w.close()
+
+
+def test_livret_a4_dans_la_liste(app):
+    w = FenetrePrincipale()
+    assert w.cb_livret.findData("a4") >= 0
+    w.cb_livret.setCurrentIndex(w.cb_livret.findData("a4"))
+    assert w.mode_livret() == "a4" and not w.c_signets.isEnabled()
+    w.cb_livret.setCurrentIndex(0)
     w.close()

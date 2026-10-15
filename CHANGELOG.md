@@ -2,6 +2,25 @@
 
 ## English
 
+### 1.3.0
+
+- New **Pages** tab: open one document (PDF, Word, image…) and see all its pages as thumbnails.
+  Rotate pages a quarter turn (Ctrl+L / Ctrl+R), remove pages (Del), drag them to a new place,
+  double-click to see a page full size, *Undo all*, then *Save…* a new PDF. Rotation only changes
+  the page orientation: no loss of quality. Unsaved changes are never lost without a question.
+- New **Finishing** tab, on one or several PDF files at once (each gives `<name> - finished.pdf`):
+  - page numbers: bottom centre, or outer edge (right on odd pages, left on even pages) at the bottom
+    or the top; “3” or “3 / 12”; start number; no number on the title page;
+  - text at the top of every page, or of page 1 only (title, part name);
+  - smaller file for e-mail: photos and colour or grey scans reduced to 150 dpi (JPEG); text, vector
+    music and black-and-white scans are left untouched. Size before and after is shown.
+  Numbers and text are placed on the page as it is seen, even on a rotated page.
+- New booklet layout: **A4 booklet on A3 sheets** (two A4 pages per A3 sheet, not reduced), the usual
+  size for bound scores, next to the A5 booklet on A4.
+- User guide reorganised: an “I want to… → which tab” table first, two new chapters (Pages,
+  Finishing), combined recipes, shortcuts by tab.
+- Packages keep Qt's PDF module (QtPdf), used for the thumbnails; the build checks it is present.
+
 ### 1.2.0
 
 - Linux: opening and saving files now always use Qt's complete file dialog
@@ -69,6 +88,27 @@ First version.
 - Windows, macOS and Linux packages with automatic updates and error reports.
 
 ## Francais
+
+### 1.3.0
+
+- Nouvel onglet **Pages** : ouvrir un document (PDF, Word, image…) et voir toutes ses pages en
+  vignettes. Pivoter d'un quart de tour (Ctrl+L / Ctrl+R), retirer (Suppr), faire glisser une page
+  à sa nouvelle place, double-clic pour la voir en grand, *Tout annuler*, puis *Enregistrer…* un
+  nouveau PDF. Pivoter ne change que l'orientation : aucune perte de qualité. Des changements non
+  enregistrés ne sont jamais perdus sans question.
+- Nouvel onglet **Finitions**, sur un ou plusieurs PDF à la fois (chacun donne `<nom> - finitions.pdf`) :
+  - numéros de page : en bas au centre, ou côté extérieur (à droite sur les impaires, à gauche sur les
+    paires) en bas ou en haut ; « 3 » ou « 3 / 12 » ; numéro de départ ; pas de numéro sur la page de titre ;
+  - texte en haut de toutes les pages, ou de la première seulement (titre, nom de la partie) ;
+  - allègement pour l'e-mail : photos et scans couleur ou gris réduits à 150 ppp (JPEG) ; le texte, la
+    musique vectorielle et les scans noir et blanc restent intacts. Poids avant et après affiché.
+  Numéros et texte sont placés sur la page telle qu'on la voit, même tournée.
+- Nouvelle mise en page : **livret A4 sur feuilles A3** (deux pages A4 par feuille A3, sans réduction),
+  le format des partitions reliées, à côté du livret A5 sur A4.
+- Manuel réorganisé : un tableau « Je veux… → quel onglet » en tête, deux nouveaux chapitres (Pages,
+  Finitions), des recettes combinées, les raccourcis par onglet.
+- Les paquets gardent le module PDF de Qt (QtPdf), qui dessine les vignettes ; la construction vérifie
+  sa présence.
 
 ### 1.2.0
 

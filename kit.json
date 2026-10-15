@@ -47,7 +47,9 @@
     "tutti.i18n",
     "tutti.style",
     "pikepdf",
-    "interface_kit"
+    "interface_kit",
+    "tutti.pages",
+    "PyQt6.QtPdf"
   ],
   "icone_png": "logo_256.png",
   "icone_grande": "logo_512.png",
@@ -60,10 +62,25 @@
   "tests_ci": [
     "tests/test_confidentialite.py",
     "tests/test_moteur.py",
+    "tests/test_pages.py",
     "tests/test_conversion.py",
     "tests/test_i18n.py",
     "tests/test_textes_en_dur.py",
     "tests/test_kit.py",
     "tests/test_fenetre.py"
-  ]
+  ],
+  "qt_garder": [
+    "Pdf"
+  ],
+  "qt_attendus": {
+    "windows": [
+      "bin/Qt6Pdf.dll"
+    ],
+    "linux": [
+      "lib/libQt6Pdf.so.6"
+    ],
+    "macos": [
+      "lib/QtPdf.framework"
+    ]
+  }
 }

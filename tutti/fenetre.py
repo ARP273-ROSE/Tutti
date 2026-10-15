@@ -18,6 +18,8 @@ from PyQt6.QtCore import Qt
 from . import __version__, moteur
 from .i18n import langue, tr
 from .moteur import AssemblageAnnule, ErreurTutti, InfoPdf, Options
+from .onglet_finitions import OngletFinitions
+from .onglet_pages import OngletPages
 
 ROLE_CHEMIN = Qt.ItemDataRole.UserRole
 ROLE_INFO = Qt.ItemDataRole.UserRole + 1
@@ -103,7 +105,7 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle(tr("fenetre.titre", version=__version__))
-        self.resize(820, 620)
+        self.resize(860, 680)
         self.reglages = QtCore.QSettings("ARP273-ROSE", "Tutti")
         self.signaux = Signaux()
         self.signaux.analyse.connect(self._recevoir_analyse)
@@ -197,7 +199,8 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
         ligne_livret = QtWidgets.QHBoxLayout()
         ligne_livret.addWidget(QtWidgets.QLabel(tr("options.mise_en_page")))
         self.cb_livret = QtWidgets.QComboBox()
-        for code, cle in (("", "livret.non"), ("a5", "livret.a5"), ("ordre", "livret.ordre")):
+        for code, cle in (("", "livret.non"), ("a5", "livret.a5"), ("a4", "livret.a4"),
+                          ("ordre", "livret.ordre")):
             self.cb_livret.addItem(tr(cle), code)
         choix = self.reglages.value("livret_mode", "", type=str)
         self.cb_livret.setCurrentIndex(max(0, self.cb_livret.findData(choix)))
@@ -245,6 +248,12 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
         bas.addStretch(0 if self.barre.isVisible() else 1)
         bas.addWidget(self.b_assembler)
         ga.addLayout(bas)
+        # Onglets dans l'ordre d'un travail : assembler, retoucher les pages,
+        # finir (numéros, en-tête, poids) ; le découpage est l'opération inverse.
+        self.onglet_pages = OngletPages(self)
+        self.onglets.addTab(self.onglet_pages, tr("onglet.pages"))
+        self.onglet_finitions = OngletFinitions(self, ListePdf)
+        self.onglets.addTab(self.onglet_finitions, tr("onglet.finitions"))
         self._construire_decoupe()
         self.statusBar()
 
@@ -789,14 +798,21 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
         if livret:
             QtWidgets.QMessageBox.information(
                 self, tr("options.titre"),
-                tr("livret.conseil" if livret == "a5" else "livret.conseil_ordre"))
+                tr({"a5": "livret.conseil", "a4": "livret.conseil_a4"}.get(livret,
+                                                                           "livret.conseil_ordre")))
+        self.proposer_ouverture(sortie, pages)
+
+    def proposer_ouverture(self, sortie: Path, pages: int, message: str | None = None):
+        """Fin d'un travail qui a produit un PDF : on l'ouvre directement si la
+        case « Ouvrir le PDF une fois terminé » est cochée, sinon on propose."""
         if self.c_ouvrir.isChecked():
             QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(sortie)))
         else:
             boite = QtWidgets.QMessageBox(self)
             boite.setWindowTitle("Tutti")
             boite.setIcon(QtWidgets.QMessageBox.Icon.Information)
-            boite.setText(tr("dlg.pret", nom=sortie.name, p=pages))
+            texte = tr("dlg.pret", nom=sortie.name, p=pages)
+            boite.setText(texte + ("\n\n" + message if message else ""))
             ouvrir = boite.addButton(tr("dlg.ouvrir"), QtWidgets.QMessageBox.ButtonRole.AcceptRole)
             dossier = boite.addButton(tr("dlg.ouvrir_dossier_resultat"),
                                       QtWidgets.QMessageBox.ButtonRole.ActionRole)
@@ -808,13 +824,18 @@ class FenetrePrincipale(QtWidgets.QMainWindow):
                 QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(sortie.parent)))
 
     def closeEvent(self, ev):
-        if self._en_cours or getattr(self, "_decoupe_en_cours", False):
+        if not self.onglet_pages.confirmer_abandon():
+            ev.ignore()
+            return
+        if (self._en_cours or getattr(self, "_decoupe_en_cours", False)
+                or self.onglet_pages.en_cours or self.onglet_finitions.en_cours):
             r = QtWidgets.QMessageBox.question(
                 self, "Tutti", tr("dlg.quitter_en_cours"))
             if r != QtWidgets.QMessageBox.StandardButton.Yes:
                 ev.ignore()
                 return
             self._annuler.set()
+            self.onglet_finitions._annuler.set()
         shutil.rmtree(self._dossier_conv, ignore_errors=True)
         super().closeEvent(ev)
 

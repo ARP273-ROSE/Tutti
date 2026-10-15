@@ -18,7 +18,7 @@
 \vspace{8mm}
 {\sffamily\Huge\bfseries\color{bordeaux} TUTTI\par}
 \vspace{3mm}
-{\sffamily\LARGE\color{ink} Merge, convert and split PDF files\par}
+{\sffamily\LARGE\color{ink} Merge, convert, touch up and split PDF files\par}
 \vspace{2mm}
 {\sffamily\large\color{summit} User guide \textbullet{} version \versiontutti\par}
 \vspace{12mm}
@@ -26,7 +26,8 @@
 \sffamily\centering
 \textit{Tutti}: “all together”, in music.\\[2mm]
 \raggedright
-\textbf{1.} Drop the PDF files \quad \textbf{2.} Put them in order \quad \textbf{3.} Check the name \quad \textbf{4.} Merge
+Four tabs, in the order of a job:\\[1mm]
+\textbf{Merge} \quad → \quad \textbf{Pages} \quad → \quad \textbf{Finishing} \qquad and \quad \textbf{Split}
 \end{tcolorbox}
 \vfill
 {\footnotesize\color{summit}\sffamily Windows \textbullet{} macOS \textbullet{} Linux\par}
@@ -37,21 +38,33 @@
 
 \section{What Tutti does}
 
-Tutti does three things, without going through a website:
-\begin{itemize}
-\item it \textbf{merges} several files into one PDF, in the order you choose, with \textbf{one bookmark
-      per part} — designed for sheet music: full score and separate parts;
-\item it \textbf{converts to PDF} images (photos, scans) and Word, Excel and PowerPoint documents;
-\item it \textbf{splits} a PDF into one file per page, or by page ranges.
-\end{itemize}
-Your documents stay on your computer: nothing is sent over the Internet.
+Tutti replaces websites such as “iLovePDF”: everything happens on your computer, nothing is
+sent over the Internet. Each tab of the window does one job:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X >{\sffamily\bfseries\color{bordeaux}}l c}
+\toprule
+\textbf{I want to…} & \textbf{\color{ink}Tab} & \textbf{Page} \\
+\midrule
+merge several PDF files into one (full score + parts, one bookmark per part) & Merge and convert & \pageref{sec:assembler} \\
+turn a photo, a scan, a Word, Excel or PowerPoint file into a PDF & Merge and convert & \pageref{sec:convertir} \\
+make a booklet to fold and staple (A5 on A4, or A4 on A3) & Merge and convert & \pageref{sec:options} \\
+straighten a page scanned crooked or sideways & Pages & \pageref{sec:pages} \\
+remove a blank or duplicate page, change the page order & Pages & \pageref{sec:pages} \\
+number the pages, write a title at the top of every page & Finishing & \pageref{sec:finitions} \\
+make a PDF small enough to send by e-mail & Finishing & \pageref{sec:finitions} \\
+make one file per page, or extract pages & Split & \pageref{sec:decouper} \\
+\bottomrule
+\end{tabularx}
+\end{center}
 
 \begin{securitebox}
 \begin{itemize}
 \item The original files are \textbf{never modified}: Tutti reads them and only writes the new PDF.
 \item Pages are copied \textbf{as they are}, with no loss of quality and no “re-printing”.
 \item Tutti refuses to write over one of the files being merged.
-\item A power cut during the merge never leaves a half-written PDF behind.
+\item A power cut while writing never leaves a half-written PDF behind.
 \end{itemize}
 \end{securitebox}
 
@@ -98,7 +111,7 @@ are hidden. You can change your mind at any time in the \menu{Help} menu.
 
 \capture[0.82]{../capture_vide-en.png}
 
-\section{Merging PDF files, step by step}
+\section{Merging PDF files, step by step}\label{sec:assembler}
 
 \subsection{Adding the files}
 \begin{itemize}
@@ -135,7 +148,7 @@ When done, the PDF opens (option \menu{Open the PDF when done}).
 \astuce{If the output file already exists, Tutti asks whether to replace it. If it is open in a
 PDF reader, close it first: Windows does not allow replacing an open file.}
 
-\section{Options}
+\section{Options}\label{sec:options}
 
 \begin{description}[style=nextline,leftmargin=5mm,font=\sffamily\bfseries\color{bordeaux}]
 \item[One bookmark per file]
@@ -148,11 +161,15 @@ the next part also starts on a right-hand page.
 For a \textbf{booklet folded and stapled in the middle} (a concert programme, for example). The
 booklet is made from \textbf{everything in the list}, in list order: one multi-page file, or several
 one-page files (page 1, page 2…), or a mix. Blank pages are added up to a multiple of 4; they go at the
-end of the booklet. Two choices:
+end of the booklet. Three choices:
 \begin{itemize}
 \item \textbf{A5 booklet ready to print}: two pages reduced to A5, side by side on each side of a
       landscape A4 sheet. Print on A4, landscape, \textbf{actual size (100\%)},
       \textbf{double-sided, flip on the short edge}.
+\item \textbf{A4 booklet on A3 sheets}: the usual size for bound sheet music. Two A4 pages,
+      \textbf{not reduced}, side by side on each side of a landscape A3 sheet. You need an A3
+      printer (or a print shop): A3, landscape, actual size, double-sided short edge. You get an
+      A4 booklet.
 \item \textbf{Booklet order only}: pages keep their size and are simply put in booklet order
       (8, 1, 2, 7, 6, 3, 4, 5 for 8 pages). When printing, choose \textbf{2 pages per sheet},
       landscape, double-sided short edge.
@@ -184,7 +201,7 @@ The file is probably open in another program & Close the merged PDF in your read
 \end{tabularx}
 \end{center}
 
-\section{Converting images and documents to PDF}
+\section{Converting images and documents to PDF}\label{sec:convertir}
 
 In the \menu{Merge and convert} tab, the list also accepts:
 \begin{center}
@@ -215,7 +232,90 @@ produces the PDF.
       the file is shown in red.
 \end{itemize}
 
-\section{Splitting a PDF}
+\section{Touching up pages (Pages tab)}\label{sec:pages}
+
+The \menu{Pages} tab shows \textbf{every page of a document as a thumbnail}, so you can rotate them,
+remove them or change their order. It works on \textbf{one document at a time}.
+
+\subsection{Opening the document}
+Drop \textbf{one} file into the large frame, or click \menu{Open a document…}. A PDF, but also a
+Word file, a PowerPoint file, an image… (converted first, as in the first tab). The thumbnails
+appear one after the other; under each one, the \textbf{page number in the original document}.
+
+\capture[0.82]{../capture_pages-en.png}
+
+\subsection{Selecting pages}
+\begin{itemize}
+\item a \textbf{click} selects a page (it is highlighted);
+\item \touche{Ctrl}+click adds a page to, or removes it from, the selection; \touche{Shift}+click
+      selects a whole run of pages;
+\item \menu{Select all} (\touche{Ctrl}+\touche{A}) selects every page;
+\item a \textbf{double-click} shows the page full size, so you can read it before deciding.
+\end{itemize}
+
+\subsection{Rotate, remove, move}
+\begin{description}[style=nextline,leftmargin=5mm,font=\sffamily\bfseries\color{bordeaux}]
+\item[↺ Rotate left, ↻ Rotate right]
+A quarter turn per click (\touche{Ctrl}+\touche{L} / \touche{Ctrl}+\touche{R}), on every selected
+page. A rotated page shows the ↻ sign under its thumbnail. The page content is not touched: only its
+orientation changes, with no loss of quality.
+\item[Remove]
+Leaves the selected pages out of the result (\touche{Del}). The original document keeps all its pages.
+\item[Move]
+\textbf{Drag} a thumbnail (or several selected thumbnails) to its new place.
+\item[Undo all]
+Goes back to the original pages, in the original order.
+\end{description}
+The line under the thumbnails sums up the changes: “12 pages — 1 removed — 2 rotated — order changed”.
+
+\subsection{Saving}
+\menu{Save…} asks where to write the new PDF; Tutti suggests \fichier{<name> - touched up.pdf}
+next to the document. \textbf{The original document is never modified}: Tutti refuses to write over
+it. If you close Tutti or open another document while changes are not saved, Tutti asks first.
+
+\astuce{A scanned score with one page that came out sideways: open it in \menu{Pages}, click the
+sideways page, \menu{Rotate}, then \menu{Save…}. Thirty seconds.}
+
+\section{Finishing: numbers, title, size}\label{sec:finitions}
+
+The \menu{Finishing} tab adds the final touch to one or \textbf{several} PDF files at once — all the
+parts of a score, for example. Each file gives a \textbf{new} file, \fichier{<name> - finished.pdf},
+next to the original (or in the folder of your choice).
+
+\capture[0.82]{../capture_finitions-en.png}
+
+\begin{description}[style=nextline,leftmargin=5mm,font=\sffamily\bfseries\color{bordeaux}]
+\item[Page numbers]
+\begin{itemize}
+\item \textbf{Where}: bottom centre; or \textbf{outer edge}, i.e.\ on the right of odd pages and on
+      the left of even pages — the free edge of a bound double-sided copy, where the thumb turns the
+      page; at the bottom or at the top.
+\item \textbf{Style}: “3”, or “3 / 12” (number and total number of pages).
+\item \textbf{Start at}: the number of the first page, for a part that follows another one.
+\item \textbf{No number on page 1}: the title page is not numbered, but it counts (the next one
+      shows 2).
+\end{itemize}
+\item[Text at the top of the page]
+The title of the work, the name of the part (“Smetana — The Moldau — Violin I”)… centred at the top
+of \textbf{every page}, or of \textbf{page 1 only}. Leave the box empty to write nothing.
+\item[Make smaller for e-mail]
+Colour or grey photos and scans that are more detailed than needed are reduced to 150 dots per inch —
+plenty for the screen and an office printer. Text and music notes written by software (Finale,
+Sibelius, Word…) are not images: they stay perfectly sharp. Black-and-white scans are already small
+and are left as they are. At the end, Tutti shows the size before and after.
+\end{description}
+
+\begin{center}
+\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.6pt}%
+\fcolorbox{summit}{white}{\includegraphics[width=0.42\linewidth]{../exemple_finitions-en.png}}\\[1mm]
+{\small\sffamily\color{summit} Result: title at the top, “2 / 9” at the bottom on the outer edge (even page: on the left).}
+\end{center}
+
+\astuce{Numbers and text are written in small type (10 points), 7 mm from the edge: beyond the
+margin a printer cannot print, and usually above the first staff. If a score fills its page right up
+to the edge, choose numbers “at the top”, or no text.}
+
+\section{Splitting a PDF}\label{sec:decouper}
 
 \menu{Split} tab:
 \begin{enumerate}
@@ -242,6 +342,11 @@ replacing them.
       put them in order, merge.
 \item \textbf{An Excel sheet to PDF}: drop it alone into \menu{Merge and convert}.
 \item \textbf{Pages 3 to 5 of a presentation}: drop the \fichier{.pptx} into \menu{Split}, ranges \fichier{3-5}.
+\item \textbf{A complete score, clean and ready to send}: \menu{Merge} the parts → open the result in
+      \menu{Pages} to straighten a sideways page and remove a blank page → \menu{Finishing}: numbers
+      “3 / 12” on the outer edge, title at the top, “make smaller” → send the \fichier{- finished.pdf} file.
+\item \textbf{A concert programme booklet}: merge the pages (Word, images…), then the \menu{A5 booklet}
+      layout — or, to number them first, \menu{Finishing}, then \menu{Merge} the numbered file as a booklet.
 \end{itemize}
 
 \section{Updates}
@@ -268,9 +373,18 @@ Internet connection, the report is saved to a file whose location Tutti shows yo
 \renewcommand{\arraystretch}{1.35}
 \begin{tabular}{ll}
 \toprule
-\touche{Ctrl}+\touche{O} & Add PDF files \\
+\multicolumn{2}{l}{\sffamily\bfseries\color{bordeaux} Merge and convert} \\
+\touche{Ctrl}+\touche{O} & Add files \\
 \touche{Alt}+\touche{↑} \ / \ \touche{Alt}+\touche{↓} & Move the selected file up / down \\
 \touche{Del} & Remove the selected file from the list \\
+\midrule
+\multicolumn{2}{l}{\sffamily\bfseries\color{bordeaux} Pages} \\
+\touche{Ctrl}+\touche{L} \ / \ \touche{Ctrl}+\touche{R} & Rotate left / right \\
+\touche{Del} & Remove the selected pages \\
+\touche{Ctrl}+\touche{A} & Select every page \\
+double-click & See the page full size \\
+\midrule
+\multicolumn{2}{l}{\sffamily\bfseries\color{bordeaux} Everywhere} \\
 \touche{F1} & Open this guide \\
 \touche{Ctrl}+\touche{Q} & Quit \\
 \bottomrule
@@ -279,7 +393,7 @@ Internet connection, the report is saved to a file whose location Tutti shows yo
 
 \vfill
 {\footnotesize\color{summit}\sffamily
-Tutti uses qpdf (through pikepdf) and the Source Sans 3 and EB Garamond fonts (SIL Open Font
+Tutti uses qpdf (through pikepdf), QtPdf for the thumbnails, and the Source Sans 3 and EB Garamond fonts (SIL Open Font
 License). Examples in this guide use fictitious files.\par}
 
 \end{document}
