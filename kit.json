@@ -82,5 +82,6 @@
     "macos": [
       "lib/QtPdf.framework"
     ]
-  }
+  },
+  "release_unique": true
 }
