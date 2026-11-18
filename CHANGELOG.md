@@ -7,6 +7,7 @@
 - Signed updates: Tutti installs an update only if its archive is listed in a manifest
   signed by the publisher's key (Ed25519, kept off GitHub); a stolen GitHub access can no longer
   push code to installed copies. The address reached after redirects is checked as well.
+- PyQt6 capped below 6.12, which no longer ships Qt's PDF module (used for the thumbnails).
 
 ### 1.3.0
 
@@ -101,6 +102,7 @@ First version.
   dans un manifeste signé par la clé de l'éditeur (Ed25519, hors de GitHub) ; un accès GitHub volé
   ne peut plus pousser de code sur les postes. L'adresse atteinte après les redirections est
   vérifiée elle aussi.
+- PyQt6 plafonné sous 6.12, qui ne fournit plus le module PDF de Qt (vignettes).
 
 ### 1.3.0
 
