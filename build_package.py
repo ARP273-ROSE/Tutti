@@ -15,6 +15,7 @@ Resultat : dist/<NomApp>/ contenant
     python/     interpreteur + dependances
     app/        le code de l'application
     bin/        binaires supplementaires eventuels (ffmpeg...)
+    outils/     outils tiers embarques (kit.json « outils », voir outils_kit.py)
     <NomApp>.bat et Diagnostic.bat
 
 Usage :
@@ -54,7 +55,11 @@ CACHE = ROOT / '.build_cache'
 PY_VERSION = '3.12.10'
 PY_EMBED_URL = (f'https://www.python.org/ftp/python/{PY_VERSION}/'
                 f'python-{PY_VERSION}-embed-amd64.zip')
-GET_PIP_URL = 'https://bootstrap.pypa.io/get-pip.py'
+# pip pose depuis sa roue : le get-pip.py actuel refuse de s'installer sous Windows
+# (« To modify pip, please run… », 03/11/2026). Roue pure Python, simple archive.
+PIP_VERSION = '25.2'
+PIP_WHEEL_URL = (f'https://files.pythonhosted.org/packages/py3/p/pip/'
+                 f'pip-{PIP_VERSION}-py3-none-any.whl')
 
 # Ce qui entre dans le paquet est decrit explicitement plutot que copie en
 # bloc : un depot contient aussi des scripts de maintenance, des rapports et
@@ -140,10 +145,13 @@ def step_python():
         log(f'{pth.name} ajuste (site actif, ../app dans le chemin)')
 
     exe = py_dir / 'python.exe'
-    get_pip = fetch(GET_PIP_URL, CACHE / 'get-pip.py')
+    roue = fetch(PIP_WHEEL_URL, CACHE / f'pip-{PIP_VERSION}.whl')
     log('installation de pip')
-    subprocess.run([str(exe), str(get_pip), '--no-warn-script-location', '-q'],
-                   check=True)
+    site = py_dir / 'Lib' / 'site-packages'
+    site.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(roue) as z:
+        z.extractall(site)
+    subprocess.run([str(exe), '-m', 'pip', '--version'], check=True)
 
     # setuptools et wheel ne sont pas fournis par la distribution embeddable,
     # et get-pip n'installe que pip. Des qu'une dependance n'a pas de roue
@@ -268,6 +276,14 @@ def step_binaires():
                     with z.open(membre) as src, open(dest / base, 'wb') as out:
                         shutil.copyfileobj(src, out)
                     log(f'{base} extrait')
+
+
+def step_outils():
+    """Outils tiers embarques (kit.json « outils ») : Tesseract, Tectonic...
+    poses dans outils/<nom>/ a cote de python/ et app/, essayes, caches
+    pre-remplis. Le detail vit dans outils_kit.py, commun aux trois systemes."""
+    import outils_kit
+    outils_kit.poser_tous(KIT, PKG, CACHE, ROOT, app=PKG / 'app', log=log)
 
 
 def qt_gardes() -> tuple:
@@ -404,6 +420,7 @@ def main():
     ap.add_argument('--out', help="dossier de sortie (doit etre un disque local)")
     ap.add_argument('--no-prune', action='store_true')
     ap.add_argument('--skip-binaires', action='store_true')
+    ap.add_argument('--skip-outils', action='store_true')
     args = ap.parse_args()
 
     if args.out:
@@ -433,6 +450,7 @@ def main():
         ('Dependances', lambda: step_deps(globals()['_exe'])),
         ('Application', step_app),
         ('Binaires', (lambda: log('ignore')) if args.skip_binaires else step_binaires),
+        ('Outils embarques', (lambda: log('ignore')) if args.skip_outils else step_outils),
         # kit.json « qt_elaguer » : false pour une application qui se sert de
         # modules Qt que l'elagage retire (QtWebEngine et ses dependances
         # Qml/Quick/WebChannel/Positioning : une liseuse EPUB, par exemple).

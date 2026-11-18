@@ -115,6 +115,7 @@ Name: "desktopicon"; Description: "{cm:CreerRaccourci}"; \
 ; vivent dans %LOCALAPPDATA%\{#AppName} et ne sont pas touchees.
 Type: filesandordirs; Name: "{app}\app"
 Type: filesandordirs; Name: "{app}\python"
+Type: filesandordirs; Name: "{app}\outils"
 
 [Files]
 ; Tout le paquet : python embarque, code applicatif, binaires eventuels.
