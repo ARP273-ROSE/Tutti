@@ -50,7 +50,7 @@
     "pikepdf",
     "interface_kit",
     "tutti.pages",
-    "PyQt6.QtPdf"
+    "pypdfium2"
   ],
   "icone_png": "logo_256.png",
   "icone_grande": "logo_512.png",
@@ -71,20 +71,6 @@
     "tests/test_fenetre.py",
     "tests/test_signature_maj.py"
   ],
-  "qt_garder": [
-    "Pdf"
-  ],
-  "qt_attendus": {
-    "windows": [
-      "bin/Qt6Pdf.dll"
-    ],
-    "linux": [
-      "lib/libQt6Pdf.so.6"
-    ],
-    "macos": [
-      "lib/QtPdf.framework"
-    ]
-  },
   "release_unique": true,
   "cle_publique_maj": "kHjUuLfq9BPw5+cmaBXwqFGMR4J9Jq5r0wBQLybZN0s="
 }

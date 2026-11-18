@@ -294,12 +294,12 @@ TEXTES: dict[str, dict[str, str]] = {
     "a_propos.texte": {
         "fr": "<b>Tutti {version}</b><br>Assembler, convertir, retoucher et découper des PDF.<br><br>"
               "<i>Tutti</i> : « tous ensemble », en musique.<br><br>"
-              "Moteur : qpdf (via pikepdf), vignettes par QtPdf. Les pages sont recopiées telles quelles, "
+              "Moteur : qpdf (via pikepdf), vignettes par pdfium (pypdfium2). Les pages sont recopiées telles quelles, "
               "sans perte de qualité ; les fichiers d'origine ne sont jamais modifiés.<br><br>"
               "Polices : Source Sans 3 et EB Garamond (SIL Open Font License).",
         "en": "<b>Tutti {version}</b><br>Merge, convert, touch up and split PDF files.<br><br>"
               "<i>Tutti</i>: “all together”, in music.<br><br>"
-              "Engine: qpdf (through pikepdf), thumbnails by QtPdf. Pages are copied as they are, with "
+              "Engine: qpdf (through pikepdf), thumbnails by pdfium (pypdfium2). Pages are copied as they are, with "
               "no loss of quality; the original files are never modified.<br><br>"
               "Fonts: Source Sans 3 and EB Garamond (SIL Open Font License)."},
     "manuel.absent": {"fr": "Le manuel est introuvable dans le dossier du programme.",

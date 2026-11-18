@@ -1,8 +1,8 @@
 """Onglet « Pages » : voir les pages d'un document en vignettes, les pivoter,
 les retirer, les déplacer, puis enregistrer le résultat.
 
-Les vignettes sont dessinées dans un fil de fond par QtPdf (le moteur de
-rendu PDF de Qt, livré avec PyQt6) ; la fenêtre reste fluide même sur une
+Les vignettes sont dessinées dans un fil de fond par pdfium (le moteur de
+rendu PDF de Chrome, voir rendu_pdf.py) ; la fenêtre reste fluide même sur une
 partition de 200 pages. Rien n'est écrit tant qu'on n'a pas cliqué sur
 « Enregistrer » ; le document d'origine n'est jamais modifié.
 """
@@ -15,6 +15,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt
 
 from . import conversion, moteur, pages
+from .rendu_pdf import DocumentPdf, ErreurRendu, sur_blanc  # noqa: F401 (sur_blanc : compatibilité)
 from .i18n import tr
 from .moteur import ErreurTutti
 
@@ -23,17 +24,6 @@ ROLE_QUART = Qt.ItemDataRole.UserRole + 1      # rotation ajoutée, en degrés
 
 BOITE = 132          # côté de la case d'une vignette, en pixels logiques
 RENDU = 240          # hauteur de rendu (assez pour rester nette en 150 %)
-
-
-def sur_blanc(image: QtGui.QImage) -> QtGui.QImage:
-    """QtPdf rend la page sur fond transparent : sans papier blanc dessous, la
-    vignette prendrait la couleur de ce qui est derrière (ombre, sélection)."""
-    fond = QtGui.QImage(image.size(), QtGui.QImage.Format.Format_RGB32)
-    fond.fill(QtGui.QColor("white"))
-    p = QtGui.QPainter(fond)
-    p.drawImage(0, 0, image)
-    p.end()
-    return fond
 
 
 class _Signaux(QtCore.QObject):
@@ -270,8 +260,6 @@ class OngletPages(QtWidgets.QWidget):
 
     def _charger(self, gen: int, source: Path, dossier: Path):
         """Fil de fond : conversion éventuelle, puis rendu des vignettes une à une."""
-        from PyQt6.QtPdf import QPdfDocument
-
         try:
             pdf, lu = pages.ouvrir(source, dossier)
             nb = len(pdf.pages)
@@ -282,25 +270,29 @@ class OngletPages(QtWidgets.QWidget):
         except Exception as e:
             self.signaux.pret.emit(gen, None, tr("err.inattendue_assemblage", detail=type(e).__name__), 0)
             return
-        doc = QPdfDocument(None)
-        if doc.load(str(lu)) != QPdfDocument.Error.None_:
+        try:
+            doc = DocumentPdf(lu)
+        except ErreurRendu:
             self.signaux.pret.emit(gen, None, tr("err.lecture_illisible", nom=source.name), 0)
             return
         self.signaux.pret.emit(gen, lu, None, nb)
         try:
-            for i in range(min(nb, doc.pageCount())):
+            for i in range(min(nb, len(doc))):
                 if gen != self.generation:          # un autre document a été ouvert
                     return
-                taille = doc.pagePointSize(i)
-                if taille.height() <= 0 or taille.width() <= 0:
-                    continue
-                h = RENDU
-                w = max(1, round(RENDU * taille.width() / taille.height()))
-                if w > RENDU:                        # page couchée : on borne la largeur
-                    w, h = RENDU, max(1, round(RENDU * taille.height() / taille.width()))
-                image = doc.render(i, QtCore.QSize(w, h))
+                try:
+                    largeur, hauteur = doc.taille(i)
+                    if hauteur <= 0 or largeur <= 0:
+                        continue
+                    h = RENDU
+                    w = max(1, round(RENDU * largeur / hauteur))
+                    if w > RENDU:                    # page couchée : on borne la largeur
+                        w, h = RENDU, max(1, round(RENDU * hauteur / largeur))
+                    image = doc.rendre(i, w, h)
+                except Exception:
+                    continue                         # une page abîmée n'arrête pas les autres
                 if not image.isNull():
-                    self.signaux.vignette.emit(gen, i, sur_blanc(image))
+                    self.signaux.vignette.emit(gen, i, image)
         finally:
             doc.close()
 
@@ -415,25 +407,22 @@ class OngletPages(QtWidgets.QWidget):
 
     def _apercu(self, it):
         """Double-clic : la page en grand, pour la lire avant de décider."""
-        from PyQt6.QtPdf import QPdfDocument
-
         if self.lu is None:
             return
-        doc = QPdfDocument(self)
-        if doc.load(str(self.lu)) != QPdfDocument.Error.None_:
-            return
         i, quart = it.data(ROLE_PAGE), it.data(ROLE_QUART) or 0
-        ecran = self.screen().availableGeometry()
-        taille = doc.pagePointSize(i)
-        ratio = self.devicePixelRatioF() or 1.0
-        h = int(ecran.height() * 0.8)
-        w = max(1, round(h * taille.width() / max(1.0, taille.height())))
-        if w > ecran.width() * 0.8:
-            w = int(ecran.width() * 0.8)
-            h = max(1, round(w * taille.height() / max(1.0, taille.width())))
-        image = doc.render(i, QtCore.QSize(round(w * ratio), round(h * ratio)))
-        doc.close()
-        image = sur_blanc(image)
+        try:
+            with DocumentPdf(self.lu) as doc:
+                largeur, hauteur = doc.taille(i)
+                ecran = self.screen().availableGeometry()
+                ratio = self.devicePixelRatioF() or 1.0
+                h = int(ecran.height() * 0.8)
+                w = max(1, round(h * largeur / max(1.0, hauteur)))
+                if w > ecran.width() * 0.8:
+                    w = int(ecran.width() * 0.8)
+                    h = max(1, round(w * hauteur / max(1.0, largeur)))
+                image = doc.rendre(i, round(w * ratio), round(h * ratio))
+        except Exception:
+            return
         if quart % 360:
             image = image.transformed(QtGui.QTransform().rotate(quart))
         pix = QtGui.QPixmap.fromImage(image)

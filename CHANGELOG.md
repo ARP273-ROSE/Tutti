@@ -2,6 +2,12 @@
 
 ## English
 
+### 1.3.2
+
+- Page thumbnails (Pages tab) are now drawn by **pdfium**, Chrome's PDF engine (pypdfium2), instead of
+  Qt's PDF module, which PyQt6 6.12 no longer ships. Tutti follows Qt versions again (the 1.3.1 cap is
+  lifted); thumbnails and the full-size view are just as sharp, rotated pages included.
+
 ### 1.3.1
 
 - Signed updates: Tutti installs an update only if its archive is listed in a manifest
@@ -95,6 +101,13 @@ First version.
 - Windows, macOS and Linux packages with automatic updates and error reports.
 
 ## Francais
+
+### 1.3.2
+
+- Les vignettes de l'onglet Pages sont désormais dessinées par **pdfium**, le moteur PDF de Chrome
+  (pypdfium2), au lieu du module PDF de Qt que PyQt6 6.12 ne fournit plus. Tutti suit de nouveau les
+  versions de Qt (le plafond de la 1.3.1 est levé) ; vignettes et vue en grand restent aussi nettes,
+  pages pivotées comprises.
 
 ### 1.3.1
 
